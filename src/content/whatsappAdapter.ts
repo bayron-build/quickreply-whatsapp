@@ -7,8 +7,11 @@ const SELECTORS = {
   appRoot: "#app",
   // The compose box is a contenteditable div inside the footer of the open chat.
   composeBox: 'footer div[contenteditable="true"]',
-  // The open chat's name: header inside #main, a span carrying a title attribute.
-  chatHeader: "#main header span[title]",
+  // The open chat's name: the first dir="auto" span in the #main header.
+  // Verified live 2026-07-10: the name span carries no title attribute, while
+  // the status line ("online") is a span[title] and is NOT dir="auto" — so
+  // span[title] must not be used here or {name} fills with "online".
+  chatHeader: '#main header span[dir="auto"]',
 };
 
 export function isWhatsAppLoaded(): boolean {

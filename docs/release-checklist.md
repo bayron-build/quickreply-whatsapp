@@ -10,6 +10,7 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] "/" in EMPTY compose box opens picker; "/" mid-message does not
 - [ ] Enter inserts template; message is NOT auto-sent
 - [ ] {name} fills from open 1:1 chat; unknown {placeholders} stay visible
+- [ ] {name} fills the CONTACT NAME (not "online"/"typing…") while the status line is visible under the name — regression guard for the 2026-07-10 selector bug
 - [ ] Group chat: no crash ({name} = group name is acceptable)
 - [ ] No chat open + Ctrl+/ → friendly toast, no crash
 - [ ] Usage ranking: most-inserted template first on empty query
