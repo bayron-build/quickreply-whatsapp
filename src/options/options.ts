@@ -45,13 +45,14 @@ async function render(): Promise<void> {
       body.className = "t-body";
       body.textContent = tpl.body;
       const edit = document.createElement("button");
-      edit.className = "small";
+      edit.className = "small edit";
       edit.textContent = t("edit");
       edit.addEventListener("click", () => openEditor(tpl));
       const del = document.createElement("button");
-      del.className = "small";
+      del.className = "small danger";
       del.textContent = t("delete");
       del.addEventListener("click", async () => {
+        if (!window.confirm(t("deleteConfirm", [tpl.title]))) return;
         try {
           await deleteTemplate(tpl.id);
         } catch (err) {

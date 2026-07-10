@@ -47,6 +47,15 @@ function openPicker(): void {
   void picker.openAt(box.getBoundingClientRect());
 }
 
+// The panel is fixed-positioned at open time; on resize its anchor moves out
+// from under it, so dismiss rather than strand it off-screen.
+window.addEventListener("resize", () => {
+  if (picker.isOpen) {
+    picker.close();
+    getComposeBox()?.focus();
+  }
+});
+
 document.addEventListener(
   "keydown",
   (e) => {

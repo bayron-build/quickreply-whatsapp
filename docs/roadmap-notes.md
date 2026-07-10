@@ -22,6 +22,12 @@ require becoming a CRM — the tool stays a typing accelerator:
    template, {clipboard} lands it inline. Needs clipboardRead permission —
    check store-review friction before committing.
 
+## Options-page bulk actions (from Bayu's testing, 2026-07-10)
+
+Multi-select (checkboxes) + "Delete selected" for cleaning up many templates
+at once — came up after import testing created duplicates. Deferred from v1
+to avoid pre-launch scope creep; pairs naturally with folders in v1.1.
+
 ## UX papercuts fixed post-review (for changelog)
 
 - 2026-07-10: Backspace on empty picker query dismisses the picker; all

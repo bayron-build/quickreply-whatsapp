@@ -4,10 +4,12 @@ Build: `npm test` all green → `npm run typecheck` clean → `npm run zip`.
 Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 
 - [ ] Options: add / edit / delete a template; counter updates
+- [ ] Delete asks for confirmation; Cancel keeps the template; Edit (green) and Delete (red) are visually distinct
 - [ ] Options: export downloads JSON; importing it back appends
 - [ ] Options: importing an invalid file shows error, data untouched
 - [ ] Ctrl+/ opens picker over compose box; Esc closes; Ctrl+/ toggles
 - [ ] Backspace on an EMPTY picker query closes the picker; Esc / Backspace / Ctrl+/ all return focus to the compose box
+- [ ] Resizing the browser window while the picker is open dismisses it (never stranded off-screen)
 - [ ] "/" in EMPTY compose box opens picker; "/" mid-message does not
 - [ ] Enter inserts template; message is NOT auto-sent
 - [ ] {name} fills from open 1:1 chat; unknown {placeholders} stay visible

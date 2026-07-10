@@ -12,6 +12,7 @@
   "cancel": { "message": "Batal" },
   "edit": { "message": "Ubah" },
   "delete": { "message": "Hapus" },
+  "deleteConfirm": { "message": "Hapus \"$TITLE$\"? Tindakan ini tidak bisa dibatalkan.", "placeholders": { "TITLE": { "content": "$1" } } },
   "export": { "message": "Ekspor template" },
   "import": { "message": "Impor template" },
   "importSuccess": { "message": "Template berhasil diimpor." },

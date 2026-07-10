@@ -11,6 +11,10 @@ li .t-body { flex: 1; color: #667781; white-space: nowrap; overflow: hidden; tex
 button { border: 1px solid #d1d7db; background: #fff; border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.9rem; }
 button.primary { background: #008069; border-color: #008069; color: #fff; }
 button.small { padding: 0.2rem 0.5rem; font-size: 0.8rem; }
+button.edit { color: #008069; border-color: #a6ddd2; }
+button.edit:hover { background: #e7f5f1; }
+button.danger { color: #c5221f; border-color: #f3b6b4; }
+button.danger:hover { background: #fce8e6; }
 label { display: block; margin: 0.7rem 0; }
 label span { display: block; font-size: 0.85rem; margin-bottom: 0.2rem; }
 input, textarea { width: 100%; padding: 0.5rem; border: 1px solid #d1d7db; border-radius: 8px; font: inherit; }
