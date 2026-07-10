@@ -22,6 +22,7 @@ const CSS = `
 
 export class Picker {
   private panel: HTMLDivElement | null = null;
+  private opening = false;
   private input!: HTMLInputElement;
   private listEl!: HTMLUListElement;
   private templates: Template[] = [];
@@ -35,35 +36,40 @@ export class Picker {
   }
 
   async openAt(anchor: DOMRect): Promise<void> {
-    if (this.isOpen) return;
-    this.templates = await getTemplates();
+    if (this.isOpen || this.opening) return;
+    this.opening = true;
+    try {
+      this.templates = await getTemplates();
 
-    const style = document.createElement("style");
-    style.textContent = CSS;
+      const style = document.createElement("style");
+      style.textContent = CSS;
 
-    this.panel = document.createElement("div");
-    this.panel.className = "qr-panel";
-    this.panel.appendChild(style);
+      this.panel = document.createElement("div");
+      this.panel.className = "qr-panel";
+      this.panel.appendChild(style);
 
-    this.input = document.createElement("input");
-    this.input.className = "qr-input";
-    this.input.placeholder = t("pickerPlaceholder");
-    this.input.addEventListener("input", () => this.refresh());
-    this.input.addEventListener("keydown", (e) => this.onKey(e));
+      this.input = document.createElement("input");
+      this.input.className = "qr-input";
+      this.input.placeholder = t("pickerPlaceholder");
+      this.input.addEventListener("input", () => this.refresh());
+      this.input.addEventListener("keydown", (e) => this.onKey(e));
 
-    this.listEl = document.createElement("ul");
-    this.listEl.className = "qr-list";
+      this.listEl = document.createElement("ul");
+      this.listEl.className = "qr-list";
 
-    this.panel.append(this.input, this.listEl);
-    document.body.appendChild(this.panel);
+      this.panel.append(this.input, this.listEl);
+      document.body.appendChild(this.panel);
 
-    // Position above the compose box, clamped to the viewport.
-    const height = 320;
-    this.panel.style.left = `${Math.max(8, anchor.left)}px`;
-    this.panel.style.top = `${Math.max(8, anchor.top - height - 8)}px`;
+      // Position above the compose box, clamped to the viewport.
+      const height = 320;
+      this.panel.style.left = `${Math.max(8, anchor.left)}px`;
+      this.panel.style.top = `${Math.max(8, anchor.top - height - 8)}px`;
 
-    this.refresh();
-    this.input.focus();
+      this.refresh();
+      this.input.focus();
+    } finally {
+      this.opening = false;
+    }
   }
 
   close(): void {
@@ -105,6 +111,8 @@ export class Picker {
       });
       this.listEl.appendChild(li);
     });
+    const activeEl = this.listEl.querySelector(".qr-active");
+    if (activeEl) activeEl.scrollIntoView({ block: "nearest" });
   }
 
   private onKey(e: KeyboardEvent): void {
