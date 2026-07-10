@@ -15,4 +15,4 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] Usage ranking: most-inserted template first on empty query
 - [ ] UI language: English and Indonesian both render (launch with --lang=id)
 - [ ] DevTools console: no errors from content.js during all of the above
-- [ ] manifest.json in zip top level; version bumped from last release
+- [ ] manifest.json in zip top level; version bumped from last release; entry paths use forward slashes
