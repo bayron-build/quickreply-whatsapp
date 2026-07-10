@@ -17,6 +17,9 @@ Everything is stored locally in your browser: no account, no servers, no
 data collection. QuickReply never sends messages for you — you always press
 send yourself, so your account stays safe.
 
+QuickReply is an independent tool and is not affiliated with, endorsed by,
+or sponsored by WhatsApp or Meta Platforms, Inc.
+
 **Description (id):**
 Jualan lewat WhatsApp berarti mengetik jawaban yang sama sepanjang hari.
 QuickReply menyediakan pustaka template yang bisa dipanggil dengan satu
@@ -26,6 +29,9 @@ paling sering dipakai muncul paling atas. Semua tersimpan lokal di browser
 Anda: tanpa akun, tanpa server, tanpa pengumpulan data. QuickReply tidak
 pernah mengirim pesan untuk Anda — Anda selalu menekan kirim sendiri,
 sehingga akun Anda tetap aman.
+
+QuickReply adalah alat independen dan tidak berafiliasi dengan, didukung
+oleh, atau disponsori oleh WhatsApp atau Meta Platforms, Inc.
 
 **Category:** Workflow & Planning (or Communication)
 **Language:** English + Indonesian
