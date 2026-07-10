@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>QuickReply</title>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <main>
+      <h1 data-i18n="optionsTitle"></h1>
+      <p id="count" class="muted"></p>
+
+      <ul id="list"></ul>
+      <p id="empty" class="muted" data-i18n="noTemplatesYet" hidden></p>
+
+      <button id="add" class="primary" data-i18n="addTemplate"></button>
+
+      <section id="editor" hidden>
+        <label><span data-i18n="fieldTitle"></span><input id="f-title" maxlength="60" /></label>
+        <label><span data-i18n="fieldShortcut"></span><input id="f-shortcut" maxlength="20" /></label>
+        <label><span data-i18n="fieldBody"></span><textarea id="f-body" rows="5"></textarea></label>
+        <p class="muted" data-i18n="placeholderHint"></p>
+        <div class="row">
+          <button id="save" class="primary" data-i18n="save"></button>
+          <button id="cancel" data-i18n="cancel"></button>
+        </div>
+      </section>
+
+      <hr />
+      <div class="row">
+        <button id="export" data-i18n="export"></button>
+        <button id="import" data-i18n="import"></button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden />
+      </div>
+      <p id="status" class="muted" role="status"></p>
+    </main>
+    <script type="module" src="./options.ts"></script>
+  </body>
+</html>
