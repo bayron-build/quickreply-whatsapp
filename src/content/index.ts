@@ -16,9 +16,8 @@ const t = (key: string): string => {
 // When the extension is reloaded/auto-updated, content scripts already
 // running in open tabs are orphaned: every chrome.* API dies. Detect it so
 // users get a refresh hint instead of console errors. i18n is dead too,
-// so this message is hardcoded bilingually.
-const REFRESH_MSG =
-  "QuickReply was updated — refresh this page (Ctrl+R). / QuickReply diperbarui — muat ulang halaman ini (Ctrl+R).";
+// so this fallback is hardcoded (English, per product decision 2026-07-10).
+const REFRESH_MSG = "QuickReply was updated — refresh this page (Ctrl+R).";
 
 function extensionAlive(): boolean {
   try {
