@@ -2,7 +2,13 @@ import type { Template } from "../lib/types";
 import { rankTemplates } from "../lib/search";
 import { getTemplates } from "../lib/storage";
 
-const t = (key: string): string => chrome.i18n.getMessage(key) || key;
+const t = (key: string): string => {
+  try {
+    return chrome.i18n.getMessage(key) || key;
+  } catch {
+    return key; // extension context invalidated; keys are readable English
+  }
+};
 
 const CSS = `
 .qr-panel { position: fixed; z-index: 9999; width: 380px; max-height: 320px;

@@ -5,7 +5,28 @@ import { incrementUsage } from "../lib/storage";
 import { captureCaret, getComposeBox, getChatName, insertText } from "./whatsappAdapter";
 import { Picker } from "./picker";
 
-const t = (key: string): string => chrome.i18n.getMessage(key) || key;
+const t = (key: string): string => {
+  try {
+    return chrome.i18n.getMessage(key) || key;
+  } catch {
+    return key; // extension context gone; caller shows a hardcoded notice
+  }
+};
+
+// When the extension is reloaded/auto-updated, content scripts already
+// running in open tabs are orphaned: every chrome.* API dies. Detect it so
+// users get a refresh hint instead of console errors. i18n is dead too,
+// so this message is hardcoded bilingually.
+const REFRESH_MSG =
+  "QuickReply was updated — refresh this page (Ctrl+R). / QuickReply diperbarui — muat ulang halaman ini (Ctrl+R).";
+
+function extensionAlive(): boolean {
+  try {
+    return Boolean(chrome.runtime?.id);
+  } catch {
+    return false;
+  }
+}
 
 function showToast(message: string): void {
   const toast = document.createElement("div");
@@ -38,13 +59,22 @@ async function insertTemplate(tpl: Template): Promise<void> {
   const caret = savedCaret;
   savedCaret = null;
   if (insertText(text, caret)) {
-    await incrementUsage(tpl.id);
+    try {
+      await incrementUsage(tpl.id);
+    } catch {
+      // Context died mid-session; the insert already succeeded and usage
+      // counting is best-effort — never surface an error for it.
+    }
   } else {
     showToast(t("openChatFirst"));
   }
 }
 
 function openPicker(): void {
+  if (!extensionAlive()) {
+    showToast(REFRESH_MSG);
+    return;
+  }
   const box = getComposeBox();
   if (!box) {
     showToast(t("openChatFirst"));

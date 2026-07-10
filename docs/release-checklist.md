@@ -24,5 +24,6 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] Usage ranking: most-inserted template first on empty query
 - [ ] UI language: English and Indonesian both render (launch with --lang=id)
 - [ ] Dark mode: with the OS/browser in dark theme, options page and picker are dark and legible; light theme likewise
+- [ ] Orphaned-script case: reload the extension WITHOUT refreshing the WhatsApp tab, press Ctrl+/ → bilingual "refresh this page" toast, no console errors
 - [ ] DevTools console: no errors from content.js during all of the above
 - [ ] manifest.json in zip top level; version bumped from last release; entry paths use forward slashes
