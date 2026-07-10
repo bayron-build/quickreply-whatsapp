@@ -7,7 +7,7 @@
   "fieldTitle": { "message": "Title" },
   "fieldShortcut": { "message": "Shortcut" },
   "fieldBody": { "message": "Message" },
-  "placeholderHint": { "message": "Tip: use {name} and it will be filled with the customer's name automatically. You can invent other placeholders like {date} and fill them while typing." },
+  "placeholderHint": { "message": "Tip: {name}, {today}, {time} and {tomorrow} are filled automatically ({hari_ini}, {jam}, {besok} work too). You can invent other placeholders like {total} and fill them while typing." },
   "save": { "message": "Save" },
   "cancel": { "message": "Cancel" },
   "edit": { "message": "Edit" },

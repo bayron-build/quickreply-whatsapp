@@ -1,5 +1,6 @@
 import type { Template } from "../lib/types";
 import { fillTemplate } from "../lib/template";
+import { systemPlaceholders } from "../lib/systemVars";
 import { incrementUsage } from "../lib/storage";
 import { getComposeBox, getChatName, insertText } from "./whatsappAdapter";
 import { Picker } from "./picker";
@@ -26,7 +27,10 @@ const picker = new Picker(
 
 async function insertTemplate(tpl: Template): Promise<void> {
   const name = getChatName() ?? "";
-  const text = fillTemplate(tpl.body, { name });
+  const text = fillTemplate(tpl.body, {
+    ...systemPlaceholders(new Date(), navigator.language),
+    name,
+  });
   if (insertText(text)) {
     await incrementUsage(tpl.id);
   } else {

@@ -14,8 +14,9 @@ require becoming a CRM — the tool stays a typing accelerator:
    small input per placeholder (Tab between them, Enter to insert the
    completed text). One focused UI moment instead of hunting through the
    composed message. No stored customer data → still not a CRM.
-2. **System placeholders** (cheap, free tier): {date} = today, {time},
-   {tomorrow} — auto-filled like {name}. Localized formatting (id/en).
+2. **System placeholders** — SHIPPED in v1 (2026-07-10): {today}, {time},
+   {tomorrow} + Indonesian aliases {hari_ini}, {jam}, {besok}, locale-formatted.
+   Deliberately NOT {date}: ambiguous keys must stay manual.
 3. **{clipboard} placeholder** (great for the tracking-number flow):
    seller copies the resi number from the courier site, inserts the
    template, {clipboard} lands it inline. Needs clipboardRead permission —
