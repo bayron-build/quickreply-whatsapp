@@ -14,4 +14,4 @@ browser** using Chrome's extension storage. That is the only data it touches.
   messages on your behalf.
 - Uninstalling the extension deletes all stored data.
 
-Contact: bayuronald@hotmail.com
+Contact: bayron.build@gmail.com
