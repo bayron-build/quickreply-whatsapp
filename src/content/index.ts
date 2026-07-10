@@ -59,6 +59,15 @@ window.addEventListener("resize", () => {
 document.addEventListener(
   "keydown",
   (e) => {
+    // Esc closes the picker no matter what has focus — and must not reach
+    // WhatsApp, which would close the open chat.
+    if (e.key === "Escape" && picker.isOpen) {
+      e.preventDefault();
+      e.stopPropagation();
+      picker.close();
+      getComposeBox()?.focus();
+      return;
+    }
     // Ctrl+/ toggles the picker anywhere on the page.
     if (e.ctrlKey && !e.altKey && !e.metaKey && e.key === "/") {
       e.preventDefault();

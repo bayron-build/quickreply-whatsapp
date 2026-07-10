@@ -10,6 +10,9 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] Ctrl+/ opens picker over compose box; Esc closes; Ctrl+/ toggles
 - [ ] Backspace on an EMPTY picker query closes the picker; Esc / Backspace / Ctrl+/ all return focus to the compose box
 - [ ] Resizing the browser window while the picker is open dismisses it (never stranded off-screen)
+- [ ] Clicking anywhere outside the open picker closes it
+- [ ] Esc closes the picker even when the picker input is NOT focused, and does NOT exit the WhatsApp chat
+- [ ] Invalid import shows a popup alert; counter shows a plain template count (no /15 in v1)
 - [ ] "/" in EMPTY compose box opens picker; "/" mid-message does not
 - [ ] Enter inserts template; message is NOT auto-sent
 - [ ] {name} fills from open 1:1 chat; unknown {placeholders} stay visible

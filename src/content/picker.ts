@@ -70,12 +70,14 @@ export class Picker {
 
       this.refresh();
       this.input.focus();
+      document.addEventListener("mousedown", this.onDocMouseDown, true);
     } finally {
       this.opening = false;
     }
   }
 
   close(): void {
+    document.removeEventListener("mousedown", this.onDocMouseDown, true);
     this.panel?.remove();
     this.panel = null;
   }
@@ -122,6 +124,14 @@ export class Picker {
     this.close();
     this.onDismiss?.();
   }
+
+  // Click anywhere outside the panel closes it. No refocus: the user's
+  // click should land wherever they aimed it.
+  private onDocMouseDown = (e: MouseEvent): void => {
+    if (this.panel && e.target instanceof Node && !this.panel.contains(e.target)) {
+      this.close();
+    }
+  };
 
   private onKey(e: KeyboardEvent): void {
     if (e.key === "Escape") {

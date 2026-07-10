@@ -1,5 +1,4 @@
 import type { Template } from "../lib/types";
-import { FREE_TEMPLATE_CAP } from "../lib/types";
 import { getTemplates, saveTemplate, deleteTemplate } from "../lib/storage";
 import { exportToJson, parseImport } from "../lib/importExport";
 
@@ -30,7 +29,8 @@ let editingId: string | null = null;
 
 async function render(): Promise<void> {
   const templates = await getTemplates();
-  count.textContent = `${t("templateCount", [String(templates.length)])} · ${templates.length}/${FREE_TEMPLATE_CAP}`;
+  // Plain count in v1 — the /cap display returns in v1.1 when the cap is enforced.
+  count.textContent = t("templateCount", [String(templates.length)]);
   empty.hidden = templates.length > 0;
   list.replaceChildren(
     ...templates.map((tpl) => {
@@ -129,7 +129,7 @@ importFile.addEventListener("change", async () => {
   if (!file) return;
   const result = parseImport(await file.text());
   if (!result.ok) {
-    status.textContent = t("importError");
+    window.alert(t("importError"));
     return;
   }
   try {
