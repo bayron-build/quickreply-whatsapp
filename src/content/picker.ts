@@ -18,6 +18,15 @@ const CSS = `
 .qr-item .qr-shortcut { font-family: monospace; color: #008069; }
 .qr-item .qr-body { color: #667781; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .qr-empty { padding: 12px; color: #667781; }
+@media (prefers-color-scheme: dark) {
+  .qr-panel { background: #233138; color: #e9edef; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+  .qr-input { background: transparent; color: inherit; border-bottom-color: #2a3942; }
+  .qr-input::placeholder { color: #8696a0; }
+  .qr-item.qr-active { background: #182229; }
+  .qr-item .qr-shortcut { color: #06cf9c; }
+  .qr-item .qr-body { color: #8696a0; }
+  .qr-empty { color: #8696a0; }
+}
 `;
 
 export class Picker {

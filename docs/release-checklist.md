@@ -22,5 +22,6 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] No chat open + Ctrl+/ → friendly toast, no crash
 - [ ] Usage ranking: most-inserted template first on empty query
 - [ ] UI language: English and Indonesian both render (launch with --lang=id)
+- [ ] Dark mode: with the OS/browser in dark theme, options page and picker are dark and legible; light theme likewise
 - [ ] DevTools console: no errors from content.js during all of the above
 - [ ] manifest.json in zip top level; version bumped from last release; entry paths use forward slashes
