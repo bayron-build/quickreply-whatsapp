@@ -52,7 +52,13 @@ async function render(): Promise<void> {
       del.className = "small";
       del.textContent = t("delete");
       del.addEventListener("click", async () => {
-        await deleteTemplate(tpl.id);
+        try {
+          await deleteTemplate(tpl.id);
+        } catch (err) {
+          // Spec: storage write failures must be visible in the options page.
+          status.textContent = String(err);
+          return;
+        }
         await render();
       });
       li.append(title, shortcut, body, edit, del);
@@ -125,7 +131,13 @@ importFile.addEventListener("change", async () => {
     status.textContent = t("importError");
     return;
   }
-  for (const tpl of result.templates) await saveTemplate(tpl);
+  try {
+    for (const tpl of result.templates) await saveTemplate(tpl);
+  } catch (err) {
+    // Spec: storage write failures must be visible in the options page.
+    status.textContent = String(err);
+    return;
+  }
   status.textContent = t("importSuccess");
   await render();
 });
