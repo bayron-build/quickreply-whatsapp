@@ -1,6 +1,6 @@
 # QuickReply for WhatsApp Web — Privacy Policy
 
-Effective date: <fill in on publish day>
+Effective date: July 10, 2026
 
 QuickReply stores your message templates and settings **locally in your
 browser** using Chrome's extension storage. That is the only data it touches.
