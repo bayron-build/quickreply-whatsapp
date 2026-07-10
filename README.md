@@ -23,3 +23,11 @@ auto-filled variables, inside WhatsApp Web. MV3 extension for Chrome/Edge.
 
 Never auto-send. No servers, no accounts, no telemetry. See
 `docs/superpowers/specs/2026-07-10-whatsapp-quickreply-design.md`.
+
+## License
+
+Copyright (c) 2026 bayron. All rights reserved.
+
+The source is public for transparency and portfolio purposes. You are
+welcome to read it and learn from it, but copying, redistributing, or
+republishing this extension (or derivatives of it) is not permitted.
