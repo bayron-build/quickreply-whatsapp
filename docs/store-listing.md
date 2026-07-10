@@ -3,18 +3,18 @@
 **Name (en):** QuickReply for WhatsApp Web
 **Name (id):** QuickReply untuk WhatsApp Web
 
-**Summary (en):** Answer customers in two keystrokes — message templates with
+**Summary (en):** Answer customers in two keystrokes: message templates with
 auto-filled variables, right inside WhatsApp Web.
-**Summary (id):** Balas pelanggan dengan dua tombol — template pesan dengan
+**Summary (id):** Balas pelanggan dengan dua tombol: template pesan dengan
 variabel otomatis, langsung di WhatsApp Web.
 
 **Description (en):**
 Selling on WhatsApp means typing the same answers all day. QuickReply gives
-you a template library one keystroke away: press Ctrl+/ (or type "/" in an
-empty message box), search, hit Enter — done. {name} is filled with the
-customer's name automatically. Your most-used templates rise to the top.
+you a template library one keystroke away. Press Ctrl+/ (or type "/" in an
+empty message box), search, hit Enter, done. {name} is filled with the
+customer's name automatically, and your most-used templates rise to the top.
 Everything is stored locally in your browser: no account, no servers, no
-data collection. QuickReply never sends messages for you — you always press
+data collection. QuickReply never sends messages for you. You always press
 send yourself, so your account stays safe.
 
 QuickReply is an independent tool and is not affiliated with, endorsed by,
@@ -23,11 +23,11 @@ or sponsored by WhatsApp or Meta Platforms, Inc.
 **Description (id):**
 Jualan lewat WhatsApp berarti mengetik jawaban yang sama sepanjang hari.
 QuickReply menyediakan pustaka template yang bisa dipanggil dengan satu
-tombol: tekan Ctrl+/ (atau ketik "/" di kotak pesan kosong), cari, tekan
-Enter — selesai. {name} terisi otomatis dengan nama pelanggan. Template yang
-paling sering dipakai muncul paling atas. Semua tersimpan lokal di browser
-Anda: tanpa akun, tanpa server, tanpa pengumpulan data. QuickReply tidak
-pernah mengirim pesan untuk Anda — Anda selalu menekan kirim sendiri,
+tombol. Tekan Ctrl+/ (atau ketik "/" di kotak pesan kosong), cari, tekan
+Enter, selesai. {name} terisi otomatis dengan nama pelanggan, dan template
+yang paling sering dipakai muncul paling atas. Semua tersimpan lokal di
+browser Anda: tanpa akun, tanpa server, tanpa pengumpulan data. QuickReply
+tidak pernah mengirim pesan untuk Anda. Anda selalu menekan kirim sendiri,
 sehingga akun Anda tetap aman.
 
 QuickReply adalah alat independen dan tidak berafiliasi dengan, didukung
