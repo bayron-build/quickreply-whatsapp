@@ -7,6 +7,7 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] Options: export downloads JSON; importing it back appends
 - [ ] Options: importing an invalid file shows error, data untouched
 - [ ] Ctrl+/ opens picker over compose box; Esc closes; Ctrl+/ toggles
+- [ ] Backspace on an EMPTY picker query closes the picker; Esc / Backspace / Ctrl+/ all return focus to the compose box
 - [ ] "/" in EMPTY compose box opens picker; "/" mid-message does not
 - [ ] Enter inserts template; message is NOT auto-sent
 - [ ] {name} fills from open 1:1 chat; unknown {placeholders} stay visible

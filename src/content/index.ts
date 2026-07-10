@@ -17,9 +17,12 @@ function showToast(message: string): void {
   setTimeout(() => toast.remove(), 3000);
 }
 
-const picker = new Picker((tpl: Template) => {
-  void insertTemplate(tpl);
-});
+const picker = new Picker(
+  (tpl: Template) => {
+    void insertTemplate(tpl);
+  },
+  () => getComposeBox()?.focus() // dismissing the picker returns you to typing
+);
 
 async function insertTemplate(tpl: Template): Promise<void> {
   const name = getChatName() ?? "";
@@ -47,8 +50,12 @@ document.addEventListener(
     if (e.ctrlKey && !e.altKey && !e.metaKey && e.key === "/") {
       e.preventDefault();
       e.stopPropagation();
-      if (picker.isOpen) picker.close();
-      else openPicker();
+      if (picker.isOpen) {
+        picker.close();
+        getComposeBox()?.focus();
+      } else {
+        openPicker();
+      }
       return;
     }
     // "/" in an empty, focused compose box opens the picker.

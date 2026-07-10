@@ -1,0 +1,29 @@
+# Roadmap notes — user-feedback-driven ideas
+
+Ideas earned from real usage, not speculation. Candidates for v1.1+, to be
+weighed against the planned Pro pillars (reminders + unlimited templates).
+
+## Faster manual placeholders (from Bayu's own testing, 2026-07-10)
+
+Pain: templates with several manual placeholders ({order}, {total},
+{tracking}) still cost real typing time per message. Improving this does NOT
+require becoming a CRM — the tool stays a typing accelerator:
+
+1. **Fill-in form in the picker** (strongest candidate; likely Pro).
+   When a chosen template has unfillable placeholders, the picker shows one
+   small input per placeholder (Tab between them, Enter to insert the
+   completed text). One focused UI moment instead of hunting through the
+   composed message. No stored customer data → still not a CRM.
+2. **System placeholders** (cheap, free tier): {date} = today, {time},
+   {tomorrow} — auto-filled like {name}. Localized formatting (id/en).
+3. **{clipboard} placeholder** (great for the tracking-number flow):
+   seller copies the resi number from the courier site, inserts the
+   template, {clipboard} lands it inline. Needs clipboardRead permission —
+   check store-review friction before committing.
+
+## UX papercuts fixed post-review (for changelog)
+
+- 2026-07-10: Backspace on empty picker query dismisses the picker; all
+  dismissals (Esc / Backspace / Ctrl+/) return focus to the compose box.
+- 2026-07-10: {name} selector fixed to read the contact name span
+  (dir="auto"), not the "online" status span.

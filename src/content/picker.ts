@@ -29,7 +29,10 @@ export class Picker {
   private matches: Template[] = [];
   private active = 0;
 
-  constructor(private onSelect: (tpl: Template) => void) {}
+  constructor(
+    private onSelect: (tpl: Template) => void,
+    private onDismiss?: () => void
+  ) {}
 
   get isOpen(): boolean {
     return this.panel !== null;
@@ -115,11 +118,20 @@ export class Picker {
     if (activeEl) activeEl.scrollIntoView({ block: "nearest" });
   }
 
+  private dismiss(): void {
+    this.close();
+    this.onDismiss?.();
+  }
+
   private onKey(e: KeyboardEvent): void {
     if (e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
-      this.close();
+      this.dismiss();
+    } else if (e.key === "Backspace" && this.input.value === "") {
+      // Backspace on an empty query "undoes" the "/" that opened the picker.
+      e.preventDefault();
+      this.dismiss();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       this.active = Math.min(this.active + 1, this.matches.length - 1);
