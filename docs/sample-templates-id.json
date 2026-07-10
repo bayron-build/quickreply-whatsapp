@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "title": "Salam pembuka",
+      "shortcut": "halo",
+      "body": "Halo {name}! 👋 Terima kasih sudah menghubungi kami. Ada yang bisa dibantu?"
+    },
+    {
+      "title": "Info harga",
+      "shortcut": "harga",
+      "body": "Ini info yang kakak minta: {barang} harganya {harga}. Stok ready — pesan sebelum jam 3 sore, dikirim hari ini juga!"
+    },
+    {
+      "title": "Cara pembayaran",
+      "shortcut": "bayar",
+      "body": "Pembayaran bisa lewat transfer bank ({bank} {rekening}) atau e-wallet ya kak. Kalau sudah, kirim bukti transfernya ke sini, langsung kami proses 🙏"
+    },
+    {
+      "title": "Pesanan dikonfirmasi",
+      "shortcut": "konfirmasi",
+      "body": "Pesanan dikonfirmasi, kak {name}! 🎉 Rincian: {pesanan}. Total: {total}. Hari ini langsung kami kemas."
+    },
+    {
+      "title": "Pesanan dikirim",
+      "shortcut": "resi",
+      "body": "Kabar baik kak {name} — pesanan sudah dikirim! 🚚 Nomor resi: {resi}. Bisa dilacak di situs kurirnya ya."
+    },
+    {
+      "title": "Follow up pesanan",
+      "shortcut": "lanjut",
+      "body": "Halo kak {name}, mau konfirmasi — jadi lanjut pesanannya? Stoknya kami tahan sampai {tanggal} ya 😊"
+    },
+    {
+      "title": "Terima kasih + minta ulasan",
+      "shortcut": "makasih",
+      "body": "Terima kasih sudah belanja, kak {name}! 💚 Kalau puas, boleh banget kasih ulasan singkat. Sampai jumpa lagi!"
+    },
+    {
+      "title": "Stok habis",
+      "shortcut": "habis",
+      "body": "Maaf banget kak {name}, barangnya baru saja habis 😔 Restock sekitar {tanggal} — mau saya kabari begitu ready lagi?"
+    },
+    {
+      "title": "Di luar jam operasional",
+      "shortcut": "jam",
+      "body": "Terima kasih pesannya! Jam operasional chat kami 09.00–18.00. Begitu online langsung kami balas ya 😊"
+    }
+  ]
+}
