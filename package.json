@@ -8,7 +8,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "build": "vite build && vite build --config vite.content.config.ts",
-    "zip": "npm run build && powershell -Command \"Remove-Item -Force -ErrorAction SilentlyContinue quickreply.zip; tar -a -cf quickreply.zip -C dist .\""
+    "zip": "npm run build && powershell -Command \"Remove-Item -Force -ErrorAction SilentlyContinue quickreply.zip; tar -a -cf quickreply.zip -C dist manifest.json content.js assets icons _locales src\""
   },
   "devDependencies": {
     "@types/chrome": "^0.0.280",
