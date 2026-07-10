@@ -1,0 +1,40 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 0; background: #f0f2f5; color: #111b21; }
+main { max-width: 640px; margin: 2rem auto; padding: 1.5rem; background: #fff; border-radius: 12px; }
+h1 { font-size: 1.3rem; margin-top: 0; }
+.muted { color: #667781; font-size: 0.85rem; }
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: baseline; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #e9edef; }
+li .t-title { font-weight: 600; }
+li .t-shortcut { font-family: monospace; color: #008069; }
+li .t-body { flex: 1; color: #667781; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+button { border: 1px solid #d1d7db; background: #fff; border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.9rem; }
+button.primary { background: #008069; border-color: #008069; color: #fff; }
+button.small { padding: 0.2rem 0.5rem; font-size: 0.8rem; }
+button.edit { color: #008069; border-color: #a6ddd2; }
+button.edit:hover { background: #e7f5f1; }
+button.danger { color: #c5221f; border-color: #f3b6b4; }
+button.danger:hover { background: #fce8e6; }
+label { display: block; margin: 0.7rem 0; }
+label span { display: block; font-size: 0.85rem; margin-bottom: 0.2rem; }
+input, textarea { width: 100%; padding: 0.5rem; border: 1px solid #d1d7db; border-radius: 8px; font: inherit; }
+.row { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
+#editor { background: #f7f8fa; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 1rem; }
+
+@media (prefers-color-scheme: dark) {
+  body { background: #111b21; color: #e9edef; }
+  main { background: #202c33; }
+  .muted { color: #8696a0; }
+  li { border-bottom-color: #2a3942; }
+  li .t-shortcut { color: #06cf9c; }
+  li .t-body { color: #8696a0; }
+  button { background: transparent; border-color: #3b4a54; color: #e9edef; }
+  button.primary { background: #008069; border-color: #008069; color: #fff; }
+  button.edit { color: #06cf9c; border-color: #14544a; }
+  button.edit:hover { background: #16281f; }
+  button.danger { color: #f28b82; border-color: #6e2b28; }
+  button.danger:hover { background: #2c1a19; }
+  input, textarea { background: #2a3942; border-color: #3b4a54; color: #e9edef; }
+  hr { border-color: #2a3942; }
+  #editor { background: #182229; }
+}

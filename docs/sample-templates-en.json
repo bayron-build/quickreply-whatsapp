@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "title": "Greeting",
+      "shortcut": "hi",
+      "body": "Hi {name}! 👋 Thanks for reaching out. How can I help you today?"
+    },
+    {
+      "title": "Price info",
+      "shortcut": "price",
+      "body": "Here's the info you asked for: {item} is {price}. Ready stock — order before 3 PM and it ships today!"
+    },
+    {
+      "title": "Payment instructions",
+      "shortcut": "pay",
+      "body": "You can pay by bank transfer ({bank} {account}) or e-wallet. Please send the receipt here once done and I'll process your order right away 🙏"
+    },
+    {
+      "title": "Order confirmed",
+      "shortcut": "confirm",
+      "body": "Order confirmed, {name}! 🎉 Summary: {order}. Total: {total}. We'll pack it today."
+    },
+    {
+      "title": "Order shipped",
+      "shortcut": "ship",
+      "body": "Good news {name} — your order is on the way! 🚚 Tracking number: {tracking}. You can track it on the courier's site."
+    },
+    {
+      "title": "Follow up",
+      "shortcut": "follow",
+      "body": "Hi {name}, just checking in — would you like to go ahead with your order? I can hold the stock for you until {date} 😊"
+    },
+    {
+      "title": "Thank you + review ask",
+      "shortcut": "thanks",
+      "body": "Thank you for shopping with us, {name}! 💚 If you're happy with your order, a short review would mean a lot. See you next time!"
+    },
+    {
+      "title": "Out of stock",
+      "shortcut": "oos",
+      "body": "So sorry {name}, that item just sold out 😔 We expect a restock around {date} — want me to message you the moment it's back?"
+    },
+    {
+      "title": "Outside chat hours",
+      "shortcut": "hours",
+      "body": "Thanks for your message! Our chat hours are 9 AM–6 PM. We'll reply first thing when we're back 😊"
+    }
+  ]
+}
