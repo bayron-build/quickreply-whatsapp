@@ -15,6 +15,7 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] Invalid import shows a popup alert; counter shows a plain template count (no /15 in v1)
 - [ ] "/" in EMPTY compose box opens picker; "/" mid-message does not
 - [ ] Enter inserts template; message is NOT auto-sent
+- [ ] With text already typed: insertion lands AT THE CURSOR position held when the picker was opened (start, middle, end); never jumps to the front
 - [ ] {name} fills from open 1:1 chat; unknown {placeholders} stay visible
 - [ ] {today}/{time}/{tomorrow} (and {hari_ini}/{jam}/{besok}) auto-fill with locale-formatted values; {date} and other custom placeholders stay manual
 - [ ] {name} fills the CONTACT NAME (not "online"/"typing…") while the status line is visible under the name — regression guard for the 2026-07-10 selector bug

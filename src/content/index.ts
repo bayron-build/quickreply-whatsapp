@@ -2,7 +2,7 @@ import type { Template } from "../lib/types";
 import { fillTemplate } from "../lib/template";
 import { systemPlaceholders } from "../lib/systemVars";
 import { incrementUsage } from "../lib/storage";
-import { getComposeBox, getChatName, insertText } from "./whatsappAdapter";
+import { captureCaret, getComposeBox, getChatName, insertText } from "./whatsappAdapter";
 import { Picker } from "./picker";
 
 const t = (key: string): string => chrome.i18n.getMessage(key) || key;
@@ -25,13 +25,19 @@ const picker = new Picker(
   () => getComposeBox()?.focus() // dismissing the picker returns you to typing
 );
 
+// Caret position in the compose box, snapshotted when the picker opens —
+// opening the picker moves focus, which loses the user's typing position.
+let savedCaret: Range | null = null;
+
 async function insertTemplate(tpl: Template): Promise<void> {
   const name = getChatName() ?? "";
   const text = fillTemplate(tpl.body, {
     ...systemPlaceholders(new Date(), navigator.language),
     name,
   });
-  if (insertText(text)) {
+  const caret = savedCaret;
+  savedCaret = null;
+  if (insertText(text, caret)) {
     await incrementUsage(tpl.id);
   } else {
     showToast(t("openChatFirst"));
@@ -44,6 +50,7 @@ function openPicker(): void {
     showToast(t("openChatFirst"));
     return;
   }
+  savedCaret = captureCaret();
   void picker.openAt(box.getBoundingClientRect());
 }
 
