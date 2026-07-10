@@ -1,7 +1,7 @@
 # QuickReply for WhatsApp Web — v1 Design
 
 **Date:** 2026-07-10
-**Status:** Approved by Bayu (pending spec review)
+**Status:** Approved by Bayu, including monetization plan (2026-07-10)
 **Working name:** QuickReply for WhatsApp Web (store name TBD before submission)
 
 ## Context & Goals
@@ -16,8 +16,18 @@ Bayu's goals, in priority order: learn to ship a real product end-to-end, earn m
 
 **Roadmap context:**
 - **v1 (this spec):** free template tool. ~2 weeks to Chrome Web Store.
-- **v1.1 (project continues):** follow-up reminders + unlimited templates as a Pro tier ($3–5/month).
+- **v1.1 (project continues):** follow-up reminders + unlimited templates as a Pro tier.
 - **Later, only if users pull us there:** mini-CRM features (notes, labels, pipeline).
+
+## Monetization (decided 2026-07-10)
+
+**Model: one free tier, one Pro tier. No additional tiers until a genuinely distinct customer segment appears (teams → that becomes project B, not a pricing row).**
+
+- **Free — the complete core experience:** full picker, full speed, `{name}` auto-fill, custom placeholders, import/export, up to **15 templates**. Free must feel magical, never crippled — free users' store ratings are the product's distribution.
+- **Pro — $3/month or ~$25/year:** unlimited templates + follow-up reminders (v1.1's headline feature). Future Pro features are chosen from post-launch user demand, not pre-planned. Possible **$19 early-bird lifetime deal** during the first weeks to convert early fans and seed reviews.
+- **Sequencing rule:** the 15-template cap ships in v1 as a counter only and stays **off** until reminders exist. On the day anyone first sees a paywall, there must already be a positive capability behind it, not just a removed limit.
+- **Rationale:** give away the habit, charge for the scale. The cap is a self-selecting meter (only high-volume sellers hit it, exactly when the tool is welded into their workflow); reminders are the positive-value pillar that a cap alone can't provide. Two different upgrade reasons catch two different seller pains at the same price.
+- **Payments:** merchant-of-record provider (Lemon Squeezy or Paddle) — handles international taxes and pays out to Indonesia; raw Stripe is not an option there. Integration is a v1.1 concern; v1 ships with no payment code.
 
 ## Design Principles
 
