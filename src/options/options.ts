@@ -1,7 +1,9 @@
 import type { Template } from "../lib/types";
+import { FREE_TEMPLATE_CAP } from "../lib/types";
 import { getTemplates, saveTemplate, deleteTemplate, deleteTemplates } from "../lib/storage";
-import { exportToJson, parseImport } from "../lib/importExport";
+import { exportToJson, parseImport, capImport } from "../lib/importExport";
 import { proView, activateLicense, deactivateLicense, getLicense, saveLicense } from "../lib/license";
+import { isProActive } from "../lib/entitlements";
 import { CHECKOUT_URL, PRICE_DISPLAY } from "../lib/proConfig";
 
 const t = (key: string, subs?: string[]): string =>
@@ -47,8 +49,20 @@ function updateDeleteSelected(): void {
 async function render(): Promise<void> {
   const templates = await getTemplates();
   for (const id of [...selected]) if (!templates.some((t) => t.id === id)) selected.delete(id);
-  // Plain count in v1 — the /cap display returns in v1.1 when the cap is enforced.
-  count.textContent = t("templateCount", [String(templates.length)]);
+  // License-aware counter: Pro sees a plain count; free sees "N / 15" plus a
+  // link to the Pro section. Assigning textContent first wipes any previous
+  // children, so re-renders stay clean.
+  const pro = await isProActive();
+  if (pro) {
+    count.textContent = t("templateCount", [String(templates.length)]);
+  } else {
+    count.textContent =
+      t("templateCountCapped", [String(templates.length), String(FREE_TEMPLATE_CAP)]) + " · ";
+    const a = document.createElement("a");
+    a.href = "#pro";
+    a.textContent = t("proRemovesLimit");
+    count.appendChild(a);
+  }
   empty.hidden = templates.length > 0;
   list.replaceChildren(
     ...templates.map((tpl) => {
@@ -110,7 +124,14 @@ function closeEditor(): void {
   editingId = null;
 }
 
-$("#add").addEventListener("click", () => openEditor(null));
+$("#add").addEventListener("click", async () => {
+  // Cap blocks NEW adds only for free users at/over the limit.
+  if (!(await isProActive()) && (await getTemplates()).length >= FREE_TEMPLATE_CAP) {
+    status.textContent = t("templateCapReached");
+    return;
+  }
+  openEditor(null);
+});
 $("#cancel").addEventListener("click", closeEditor);
 
 $("#save").addEventListener("click", async () => {
@@ -118,6 +139,16 @@ $("#save").addEventListener("click", async () => {
   const body = fBody.value;
   if (!title || !body.trim()) {
     status.textContent = t("validationError");
+    return;
+  }
+  // Defense in depth: gate a NEW template save too (editor may have opened
+  // before the cap was hit). Edits (editingId !== null) are NEVER blocked.
+  if (
+    editingId === null &&
+    !(await isProActive()) &&
+    (await getTemplates()).length >= FREE_TEMPLATE_CAP
+  ) {
+    status.textContent = t("templateCapReached");
     return;
   }
   try {
@@ -160,14 +191,22 @@ importFile.addEventListener("change", async () => {
     window.alert(t("importError"));
     return;
   }
+  const { accepted, skipped } = capImport(
+    (await getTemplates()).length,
+    result.templates,
+    await isProActive()
+  );
   try {
-    for (const tpl of result.templates) await saveTemplate(tpl);
+    for (const tpl of accepted) await saveTemplate(tpl);
   } catch (err) {
     // Spec: storage write failures must be visible in the options page.
     status.textContent = String(err);
     return;
   }
-  status.textContent = t("importSuccess");
+  status.textContent =
+    skipped > 0
+      ? t("importCapped", [String(accepted.length), String(skipped)])
+      : t("importSuccess");
   await render();
 });
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Template } from "../src/lib/types";
-import { exportToJson, parseImport } from "../src/lib/importExport";
+import { exportToJson, parseImport, capImport } from "../src/lib/importExport";
 
 const tpl: Template = {
   id: "old-id",
@@ -48,5 +48,32 @@ describe("parseImport validation", () => {
     const result = parseImport(json);
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.templates[0].usageCount).toBe(0);
+  });
+});
+
+function mkTpl(id: string): Template {
+  return { id, title: id, shortcut: "", body: "x", createdAt: 1, usageCount: 0 };
+}
+
+describe("capImport", () => {
+  const incoming = [mkTpl("a"), mkTpl("b"), mkTpl("c")];
+
+  it("accepts everything under the cap", () => {
+    expect(capImport(0, incoming, false)).toEqual({ accepted: incoming, skipped: 0 });
+  });
+
+  it("partially applies up to the cap and reports the remainder", () => {
+    const r = capImport(13, incoming, false);
+    expect(r.accepted.map((t) => t.id)).toEqual(["a", "b"]);
+    expect(r.skipped).toBe(1);
+  });
+
+  it("accepts nothing at or beyond the cap — existing templates untouched conceptually", () => {
+    expect(capImport(15, incoming, false)).toEqual({ accepted: [], skipped: 3 });
+    expect(capImport(20, incoming, false)).toEqual({ accepted: [], skipped: 3 });
+  });
+
+  it("pro is unlimited", () => {
+    expect(capImport(999, incoming, true)).toEqual({ accepted: incoming, skipped: 0 });
   });
 });

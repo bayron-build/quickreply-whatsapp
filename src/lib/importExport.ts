@@ -1,5 +1,5 @@
 import type { Template } from "./types";
-import { SCHEMA_VERSION } from "./types";
+import { SCHEMA_VERSION, FREE_TEMPLATE_CAP } from "./types";
 
 export type ImportResult =
   | { ok: true; templates: Template[] }
@@ -41,4 +41,16 @@ export function parseImport(json: string): ImportResult {
     });
   }
   return { ok: true, templates };
+}
+
+/** Free-tier import semantics: fill remaining slots in order, skip the rest.
+ *  Never touches existing templates. */
+export function capImport(
+  existingCount: number,
+  incoming: Template[],
+  pro: boolean
+): { accepted: Template[]; skipped: number } {
+  if (pro) return { accepted: incoming, skipped: 0 };
+  const room = Math.max(0, FREE_TEMPLATE_CAP - existingCount);
+  return { accepted: incoming.slice(0, room), skipped: Math.max(0, incoming.length - room) };
 }
