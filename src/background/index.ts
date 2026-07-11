@@ -5,8 +5,9 @@
  * WhatsApp; notification click-through only NAVIGATES (see OpenChatMessage).
  */
 import type { OpenChatMessage, Reminder } from "../lib/types";
-import { OPEN_CHAT_MSG } from "../lib/types";
+import { OPEN_CHAT_MSG, DAY_MS } from "../lib/types";
 import { dueReminders, getReminders, setReminderStatus } from "../lib/reminders";
+import { applyValidation, getLicense, revalidateLicense, saveLicense } from "../lib/license";
 
 /** Reserved for weekly license revalidation (handler ships with the license task). */
 const LICENSE_ALARM = "qr-license-revalidate";
@@ -46,6 +47,20 @@ async function fireReminder(r: Reminder): Promise<void> {
   await updateBadge();
 }
 
+/**
+ * Daily alarm, weekly work: validate only when the last success is ≥7 days
+ * old, so the cadence survives browser restarts without extra bookkeeping.
+ * Outcomes: valid refreshes the grace window; invalid soft-locks Pro (data
+ * untouched, reminders still fire); unreachable lets the grace window run.
+ */
+async function revalidateIfDue(): Promise<void> {
+  const state = await getLicense();
+  if (!state || state.status === "invalid") return;
+  if (Date.now() - state.lastValidatedAt < 7 * DAY_MS) return;
+  const outcome = await revalidateLicense(state);
+  await saveLicense(applyValidation(state, outcome, Date.now()));
+}
+
 /** Fire anything missed while the browser was closed, then (re)schedule the rest. */
 async function sweepAndSchedule(): Promise<void> {
   const reminders = await getReminders();
@@ -54,6 +69,8 @@ async function sweepAndSchedule(): Promise<void> {
   }
   await reconcileAlarms();
   await updateBadge();
+  chrome.alarms.create(LICENSE_ALARM, { periodInMinutes: 24 * 60 });
+  await revalidateIfDue();
 }
 
 async function openWhatsAppAt(chatName: string): Promise<void> {
@@ -95,7 +112,10 @@ async function handleNotificationClick(id: string): Promise<void> {
 }
 
 async function onAlarm(alarm: chrome.alarms.Alarm): Promise<void> {
-  if (alarm.name === LICENSE_ALARM) return; // handler ships with the license task
+  if (alarm.name === LICENSE_ALARM) {
+    await revalidateIfDue();
+    return;
+  }
   const r = (await getReminders()).find((x) => x.id === alarm.name && x.status === "pending");
   if (r) await fireReminder(r);
 }

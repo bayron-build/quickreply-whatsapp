@@ -1,7 +1,10 @@
 /**
- * The single gate every Pro check goes through. Until the license module
- * ships (wired in a later task), everyone is on the free tier.
+ * The single gate every Pro check goes through: reminder cap, fill-in
+ * form, template cap. Reads the stored license through the pure state
+ * machine (14-day offline grace included).
  */
-export async function isProActive(): Promise<boolean> {
-  return false;
+import { getLicense, isPro } from "./license";
+
+export async function isProActive(now = Date.now()): Promise<boolean> {
+  return isPro(await getLicense(), now);
 }
