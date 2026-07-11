@@ -1,8 +1,9 @@
-import type { Template } from "../lib/types";
+import type { Template, OpenChatMessage } from "../lib/types";
+import { OPEN_CHAT_MSG } from "../lib/types";
 import { fillTemplate } from "../lib/template";
 import { systemPlaceholders } from "../lib/systemVars";
 import { incrementUsage } from "../lib/storage";
-import { captureCaret, getComposeBox, getChatName, insertText } from "./whatsappAdapter";
+import { captureCaret, getComposeBox, getChatName, insertText, openChatByName } from "./whatsappAdapter";
 import { Picker } from "./picker";
 
 const t = (key: string): string => {
@@ -130,3 +131,16 @@ document.addEventListener(
   },
   true // capture, so we run before WhatsApp's own handlers
 );
+
+// Background → content: navigate to a reminded chat. Retries briefly because
+// right after a fresh tab opens, the sidebar may not be rendered yet.
+chrome.runtime.onMessage.addListener((msg: OpenChatMessage) => {
+  if (msg?.type !== OPEN_CHAT_MSG) return;
+  let attempts = 0;
+  const tryOpen = (): void => {
+    attempts += 1;
+    if (openChatByName(msg.chatName) || attempts >= 10) return;
+    setTimeout(tryOpen, 1000);
+  };
+  tryOpen();
+});

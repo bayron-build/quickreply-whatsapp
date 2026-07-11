@@ -12,6 +12,10 @@ const SELECTORS = {
   // the status line ("online") is a span[title] and is NOT dir="auto" — so
   // span[title] must not be used here or {name} fills with "online".
   chatHeader: '#main header span[dir="auto"]',
+  // Sidebar chat rows: each row contains a span[title="<chat name>"].
+  // (In the chat LIST the title attribute is present — unlike the #main
+  // header, where it is absent; both verified live 2026-07-10/11.)
+  sidebarChatTitle: "#pane-side span[title]",
 };
 
 export function isWhatsAppLoaded(): boolean {
@@ -70,4 +74,24 @@ export function insertText(text: string, caret?: Range | null): boolean {
     return false;
   }
   return true;
+}
+
+/**
+ * Navigate to a chat by clicking its sidebar row. PURE NAVIGATION — this
+ * must never touch the compose box or send anything. Only chats currently
+ * rendered in the (virtualized) sidebar are findable; returns false
+ * otherwise and the caller treats that as an acceptable fallback.
+ */
+export function openChatByName(name: string): boolean {
+  const spans = document.querySelectorAll<HTMLElement>(SELECTORS.sidebarChatTitle);
+  for (const span of spans) {
+    if (span.getAttribute("title") === name) {
+      const row = span.closest<HTMLElement>('[role="listitem"]') ?? span;
+      for (const type of ["mousedown", "mouseup", "click"]) {
+        row.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, view: window }));
+      }
+      return true;
+    }
+  }
+  return false;
 }
