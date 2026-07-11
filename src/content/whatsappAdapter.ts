@@ -22,6 +22,21 @@ export function isWhatsAppLoaded(): boolean {
   return document.querySelector(SELECTORS.appRoot) !== null;
 }
 
+/**
+ * WhatsApp's own theme, so the picker can match it even when it differs
+ * from the OS theme. WhatsApp marks dark mode with a "dark" class on
+ * <html> or <body> (verify live during QA — quarantine rule: if this
+ * breaks, fix the check here and nothing else). Returns null before the
+ * app has rendered.
+ */
+export function getTheme(): "light" | "dark" | null {
+  if (!isWhatsAppLoaded()) return null;
+  const dark =
+    document.documentElement.classList.contains("dark") ||
+    document.body.classList.contains("dark");
+  return dark ? "dark" : "light";
+}
+
 export function getComposeBox(): HTMLElement | null {
   return document.querySelector<HTMLElement>(SELECTORS.composeBox);
 }

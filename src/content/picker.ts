@@ -29,15 +29,13 @@ const CSS = `
 .qr-item .qr-shortcut { font-family: monospace; color: #008069; }
 .qr-item .qr-body { color: #667781; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .qr-empty { padding: 12px; color: #667781; }
-@media (prefers-color-scheme: dark) {
-  .qr-panel { background: #233138; color: #e9edef; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
-  .qr-input { background: transparent; color: inherit; border-bottom-color: #2a3942; }
-  .qr-input::placeholder { color: #8696a0; }
-  .qr-item.qr-active { background: #182229; }
-  .qr-item .qr-shortcut { color: #06cf9c; }
-  .qr-item .qr-body { color: #8696a0; }
-  .qr-empty { color: #8696a0; }
-}
+.qr-panel.qr-dark { background: #233138; color: #e9edef; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+.qr-dark .qr-input { background: transparent; color: inherit; border-bottom-color: #2a3942; }
+.qr-dark .qr-input::placeholder { color: #8696a0; }
+.qr-dark .qr-item.qr-active { background: #182229; }
+.qr-dark .qr-item .qr-shortcut { color: #06cf9c; }
+.qr-dark .qr-item .qr-body { color: #8696a0; }
+.qr-dark .qr-empty { color: #8696a0; }
 .qr-remind { padding: 8px 12px; cursor: pointer; color: #008069; font-weight: 600;
   border-bottom: 1px solid #e9edef; }
 .qr-remind.qr-active { background: #f0f2f5; }
@@ -55,6 +53,15 @@ const CSS = `
 .qr-fill-label { display: flex; flex-direction: column; gap: 3px; }
 .qr-fill-label span { font-family: monospace; font-size: 12px; color: #667781; }
 .qr-prefilled { color: #8696a0; }
+.qr-dark .qr-remind { border-bottom-color: #2a3942; color: #06cf9c; }
+.qr-dark .qr-remind.qr-active { background: #182229; }
+.qr-dark .qr-preset, .qr-dark .qr-btn { background: transparent; border-color: #3b4a54; color: #e9edef; }
+.qr-dark .qr-preset:hover { background: #182229; }
+.qr-dark .qr-btn.qr-primary { background: #008069; border-color: #008069; color: #fff; }
+.qr-dark .qr-note, .qr-dark .qr-custom { background: #2a3942; border-color: #3b4a54; color: #e9edef; }
+.qr-dark .qr-error { color: #f28b82; }
+.qr-dark .qr-fill-label span { color: #8696a0; }
+.qr-dark .qr-prefilled { color: #667781; }
 `;
 
 export class Picker {
@@ -74,7 +81,8 @@ export class Picker {
     private onDismiss?: () => void,
     private getChatName: () => string | null = () => null,
     private getFillFields: (tpl: Template) => Promise<FillField[] | null> = async () => null,
-    private onFillSubmit: (tpl: Template, values: Record<string, string>) => void = () => {}
+    private onFillSubmit: (tpl: Template, values: Record<string, string>) => void = () => {},
+    private getTheme: () => "light" | "dark" | null = () => null
   ) {}
 
   get isOpen(): boolean {
@@ -92,6 +100,9 @@ export class Picker {
 
       this.panel = document.createElement("div");
       this.panel.className = "qr-panel";
+      const theme = this.getTheme();
+      const dark = theme ? theme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      this.panel.classList.toggle("qr-dark", dark);
       this.panel.appendChild(style);
 
       this.input = document.createElement("input");

@@ -5,7 +5,7 @@ import { systemPlaceholders } from "../lib/systemVars";
 import { buildFillFields, needsFillForm } from "../lib/fillForm";
 import { isProActive } from "../lib/entitlements";
 import { incrementUsage } from "../lib/storage";
-import { captureCaret, getComposeBox, getChatName, insertText, openChatByName } from "./whatsappAdapter";
+import { captureCaret, getComposeBox, getChatName, getTheme, insertText, openChatByName } from "./whatsappAdapter";
 import { Picker } from "./picker";
 
 const t = (key: string): string => {
@@ -55,7 +55,8 @@ const picker = new Picker(
   },
   (tpl: Template, values: Record<string, string>) => {
     void insertTemplate(tpl, values);
-  }
+  },
+  () => getTheme()
 );
 
 // Caret position in the compose box, snapshotted when the picker opens —
