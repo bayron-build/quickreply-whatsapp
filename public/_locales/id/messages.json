@@ -21,5 +21,6 @@
   "pickerPlaceholder": { "message": "Cari template…" },
   "noResults": { "message": "Tidak ada template yang cocok" },
   "noTemplatesYet": { "message": "Belum ada template — tambahkan lewat opsi ekstensi." },
-  "openChatFirst": { "message": "Buka chat dulu — atau WhatsApp Web berubah dan pembaruan sedang disiapkan." }
+  "openChatFirst": { "message": "Buka chat dulu — atau WhatsApp Web berubah dan pembaruan sedang disiapkan." },
+  "reminderNotifTitle": { "message": "Tindak lanjut: $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } }
 }

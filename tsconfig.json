@@ -9,5 +9,5 @@
     "types": ["chrome"],
     "skipLibCheck": true
   },
-  "include": ["src", "tests", "vite.config.ts", "vite.content.config.ts"]
+  "include": ["src", "tests", "vite.config.ts", "vite.content.config.ts", "vite.background.config.ts"]
 }
