@@ -4,7 +4,7 @@ main { max-width: 640px; margin: 2rem auto; padding: 1.5rem; background: #fff; b
 h1 { font-size: 1.3rem; margin-top: 0; }
 .muted { color: #667781; font-size: 0.85rem; }
 ul { list-style: none; padding: 0; }
-li { display: flex; align-items: baseline; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #e9edef; }
+li { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #e9edef; }
 li .t-title { font-weight: 600; }
 li .t-shortcut { font-family: monospace; color: #008069; }
 li .t-body { flex: 1; color: #667781; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
