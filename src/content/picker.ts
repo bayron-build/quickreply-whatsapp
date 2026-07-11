@@ -4,6 +4,7 @@ import { rankTemplates } from "../lib/search";
 import { getTemplates } from "../lib/storage";
 import { canAddReminder, getReminders, presetDueAt, saveReminder } from "../lib/reminders";
 import type { ReminderPreset } from "../lib/reminders";
+import type { FillField } from "../lib/fillForm";
 import { isProActive } from "../lib/entitlements";
 
 const t = (key: string, substitutions?: string[]): string => {
@@ -51,6 +52,9 @@ const CSS = `
 .qr-btn { border: 1px solid #d1d7db; background: #fff; border-radius: 8px; padding: 8px 12px;
   cursor: pointer; font: inherit; color: inherit; }
 .qr-btn.qr-primary { background: #008069; border-color: #008069; color: #fff; }
+.qr-fill-label { display: flex; flex-direction: column; gap: 3px; }
+.qr-fill-label span { font-family: monospace; font-size: 12px; color: #667781; }
+.qr-prefilled { color: #8696a0; }
 `;
 
 export class Picker {
@@ -61,13 +65,16 @@ export class Picker {
   private templates: Template[] = [];
   private matches: Template[] = [];
   private active = 0;
-  private view: "list" | "reminder" = "list";
+  private view: "list" | "reminder" | "fill" = "list";
   private reminderError = "";
+  private fillTpl: Template | null = null;
 
   constructor(
     private onSelect: (tpl: Template) => void,
     private onDismiss?: () => void,
-    private getChatName: () => string | null = () => null
+    private getChatName: () => string | null = () => null,
+    private getFillFields: (tpl: Template) => Promise<FillField[] | null> = async () => null,
+    private onFillSubmit: (tpl: Template, values: Record<string, string>) => void = () => {}
   ) {}
 
   get isOpen(): boolean {
@@ -117,6 +124,8 @@ export class Picker {
     document.removeEventListener("mousedown", this.onDocMouseDown, true);
     this.panel?.remove();
     this.panel = null;
+    this.view = "list";
+    this.fillTpl = null;
   }
 
   private refresh(): void {
@@ -212,8 +221,86 @@ export class Picker {
   private pick(index: number): void {
     const tpl = this.matches[index];
     if (!tpl) return;
-    this.close();
-    this.onSelect(tpl);
+    void this.getFillFields(tpl).then((fields) => {
+      if (!fields) {
+        this.close();
+        this.onSelect(tpl);
+        return;
+      }
+      this.fillTpl = tpl;
+      this.view = "fill";
+      this.renderFillForm(fields);
+    });
+  }
+
+  private renderFillForm(fields: FillField[]): void {
+    this.input.hidden = true;
+    this.listEl.replaceChildren();
+    const tpl = this.fillTpl;
+    if (!tpl) return;
+    const step = document.createElement("div");
+    step.className = "qr-step";
+    const heading = document.createElement("h3");
+    heading.textContent = t("fillFormTitle");
+    step.appendChild(heading);
+
+    const inputs = new Map<string, HTMLInputElement>();
+    for (const field of fields) {
+      const label = document.createElement("label");
+      label.className = "qr-fill-label";
+      const caption = document.createElement("span");
+      caption.textContent = `{${field.key}}`;
+      const input = document.createElement("input");
+      input.className = "qr-note" + (field.auto ? " qr-prefilled" : "");
+      input.value = field.value;
+      if (field.auto) {
+        // Greyed until the user overrides it.
+        input.addEventListener("input", () => input.classList.remove("qr-prefilled"), { once: true });
+      }
+      inputs.set(field.key, input);
+      label.append(caption, input);
+      step.appendChild(label);
+    }
+
+    const submit = (): void => {
+      const values: Record<string, string> = {};
+      for (const [key, input] of inputs) values[key] = input.value;
+      const chosen = this.fillTpl;
+      this.close();
+      if (chosen) this.onFillSubmit(chosen, values);
+    };
+
+    step.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        submit();
+      }
+    });
+
+    const insert = document.createElement("button");
+    insert.className = "qr-btn qr-primary";
+    insert.textContent = t("insert");
+    insert.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      submit();
+    });
+    const back = document.createElement("button");
+    back.className = "qr-btn";
+    back.textContent = t("back");
+    back.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      this.fillTpl = null;
+      this.backToList();
+    });
+    const row = document.createElement("div");
+    row.className = "qr-row";
+    row.append(insert, back);
+    step.appendChild(row);
+    this.listEl.appendChild(step);
+    // Focus the first blank the user must fill, else the first input.
+    const firstBlank = fields.find((f) => !f.auto);
+    (firstBlank ? inputs.get(firstBlank.key) : [...inputs.values()][0])?.focus();
   }
 
   /** Esc semantics: second-step views return to the list; list view closes. */
@@ -344,6 +431,7 @@ export class Picker {
   private backToList(): void {
     this.view = "list";
     this.reminderError = "";
+    this.fillTpl = null;
     this.input.hidden = false;
     this.refresh();
     this.input.focus();

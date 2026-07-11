@@ -35,5 +35,7 @@
   "back": { "message": "Kembali" },
   "reminderCapReached": { "message": "Versi gratis mencakup 2 pengingat aktif. Pro membuatnya tanpa batas." },
   "upgradeToPro": { "message": "Tingkatkan ke Pro" },
-  "invalidTime": { "message": "Pilih waktu di masa depan." }
+  "invalidTime": { "message": "Pilih waktu di masa depan." },
+  "fillFormTitle": { "message": "Isi bagian kosong" },
+  "insert": { "message": "Sisipkan" }
 }

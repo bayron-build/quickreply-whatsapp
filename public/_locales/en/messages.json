@@ -35,5 +35,7 @@
   "back": { "message": "Back" },
   "reminderCapReached": { "message": "Free includes 2 active reminders. Pro makes them unlimited." },
   "upgradeToPro": { "message": "Upgrade to Pro" },
-  "invalidTime": { "message": "Pick a time in the future." }
+  "invalidTime": { "message": "Pick a time in the future." },
+  "fillFormTitle": { "message": "Fill in the blanks" },
+  "insert": { "message": "Insert" }
 }

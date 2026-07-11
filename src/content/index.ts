@@ -2,6 +2,8 @@ import type { Template, OpenChatMessage } from "../lib/types";
 import { OPEN_CHAT_MSG } from "../lib/types";
 import { fillTemplate } from "../lib/template";
 import { systemPlaceholders } from "../lib/systemVars";
+import { buildFillFields, needsFillForm } from "../lib/fillForm";
+import { isProActive } from "../lib/entitlements";
 import { incrementUsage } from "../lib/storage";
 import { captureCaret, getComposeBox, getChatName, insertText, openChatByName } from "./whatsappAdapter";
 import { Picker } from "./picker";
@@ -44,19 +46,30 @@ const picker = new Picker(
     void insertTemplate(tpl);
   },
   () => getComposeBox()?.focus(), // dismissing the picker returns you to typing
-  () => getChatName()
+  () => getChatName(),
+  async (tpl: Template) => {
+    // Pro-only: decide whether this template needs the fill-in step.
+    if (!(await isProActive())) return null;
+    const fields = buildFillFields(tpl.body, autoVars());
+    return needsFillForm(fields) ? fields : null;
+  },
+  (tpl: Template, values: Record<string, string>) => {
+    void insertTemplate(tpl, values);
+  }
 );
 
 // Caret position in the compose box, snapshotted when the picker opens —
 // opening the picker moves focus, which loses the user's typing position.
 let savedCaret: Range | null = null;
 
-async function insertTemplate(tpl: Template): Promise<void> {
-  const name = getChatName() ?? "";
-  const text = fillTemplate(tpl.body, {
-    ...systemPlaceholders(new Date(), navigator.language),
-    name,
-  });
+// Shared source of auto-fillable placeholder values for both the direct
+// insert path and the fill-in form.
+function autoVars(): Record<string, string> {
+  return { ...systemPlaceholders(new Date(), navigator.language), name: getChatName() ?? "" };
+}
+
+async function insertTemplate(tpl: Template, values?: Record<string, string>): Promise<void> {
+  const text = fillTemplate(tpl.body, values ?? autoVars());
   const caret = savedCaret;
   savedCaret = null;
   if (insertText(text, caret)) {
