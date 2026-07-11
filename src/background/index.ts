@@ -9,7 +9,7 @@ import { OPEN_CHAT_MSG, DAY_MS } from "../lib/types";
 import { dueReminders, getReminders, setReminderStatus } from "../lib/reminders";
 import { applyValidation, getLicense, revalidateLicense, saveLicense } from "../lib/license";
 
-/** Reserved for weekly license revalidation (handler ships with the license task). */
+/** Daily alarm; revalidateIfDue applies the weekly threshold. */
 const LICENSE_ALARM = "qr-license-revalidate";
 const WA_URL = "https://web.whatsapp.com/";
 
@@ -42,7 +42,8 @@ async function fireReminder(r: Reminder): Promise<void> {
     type: "basic",
     iconUrl: chrome.runtime.getURL("icons/icon128.png"),
     title: t("reminderNotifTitle", [r.chatName]),
-    message: r.note,
+    // The note is optional; an empty string would render a blank body.
+    message: r.note || t("reminderNotifNoNote"),
   });
   await updateBadge();
 }

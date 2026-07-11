@@ -74,6 +74,11 @@ async function post(path: string, body: Record<string, string>): Promise<Respons
   });
 }
 
+// Verdict rule for both calls below: only an explicit provider verdict
+// downgrades a license; ambiguity favors the user (grace). A transient
+// 429/WAF/proxy JSON body without the verdict field must never read as a
+// rejection — revalidateIfDue skips invalid states, so a wrong "invalid"
+// would soft-lock a paying user until manual re-activation.
 export async function activateLicense(key: string, now = Date.now()): Promise<ActivateResult> {
   let data: {
     activated?: boolean;
@@ -87,8 +92,14 @@ export async function activateLicense(key: string, now = Date.now()): Promise<Ac
   } catch {
     return { ok: false, error: "network" };
   }
-  if (!data.activated || typeof data.instance?.id !== "string") {
+  // Only `activated === false` is the provider rejecting the key. Any other
+  // non-conforming body (activated missing/not boolean, or activated true
+  // without an instance id) is ambiguous → network error, so the user retries.
+  if (data.activated === false) {
     return { ok: false, error: "invalid-key" };
+  }
+  if (data.activated !== true || typeof data.instance?.id !== "string") {
+    return { ok: false, error: "network" };
   }
   return {
     ok: true,
@@ -107,7 +118,12 @@ export async function revalidateLicense(state: LicenseState): Promise<Validation
     const res = await post("validate", { license_key: state.key, instance_id: state.instanceId });
     if (res.status >= 500) return "unreachable";
     const data: { valid?: boolean } = await res.json();
-    return data.valid === true ? "valid" : "invalid";
+    if (data.valid === true) return "valid";
+    // Explicit provider verdict only: `valid === false` means key/instance
+    // rejected. A body without the field (429/WAF page parsed as JSON, API
+    // shape drift) is ambiguous → unreachable, and the 14-day grace runs.
+    if (data.valid === false) return "invalid";
+    return "unreachable";
   } catch {
     return "unreachable";
   }

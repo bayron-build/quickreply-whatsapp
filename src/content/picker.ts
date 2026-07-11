@@ -416,9 +416,15 @@ export class Picker {
       return b;
     });
 
+    // Labelled like the fill form's fields: caption span above the input.
+    const customLabel = document.createElement("label");
+    customLabel.className = "qr-fill-label";
+    const customCaption = document.createElement("span");
+    customCaption.textContent = t("presetCustom");
     const custom = document.createElement("input");
     custom.type = "datetime-local";
     custom.className = "qr-custom";
+    customLabel.append(customCaption, custom);
 
     const error = document.createElement("p");
     error.className = "qr-error";
@@ -449,7 +455,7 @@ export class Picker {
     const row = document.createElement("div");
     row.className = "qr-row";
     row.append(set, back);
-    step.append(heading, note, ...presetBtns, custom, error, row);
+    step.append(heading, note, ...presetBtns, customLabel, error, row);
     this.listEl.appendChild(step);
     note.focus();
   }

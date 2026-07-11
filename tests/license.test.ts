@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import type { LicenseState } from "../src/lib/types";
-import { DAY_MS } from "../src/lib/types";
+import { DAY_MS, LICENSE_GRACE_MS } from "../src/lib/types";
 
 const backing = new Map<string, unknown>();
 
@@ -34,6 +34,16 @@ describe("proView / isPro", () => {
   it("recently validated → active", () => {
     expect(proView(active(NOW - DAY_MS), NOW)).toBe("active");
     expect(isPro(active(NOW - DAY_MS), NOW)).toBe(true);
+  });
+
+  it("exactly at the 8-day offline boundary → still active (strict >)", () => {
+    expect(proView(active(NOW - 8 * DAY_MS), NOW)).toBe("active");
+    expect(isPro(active(NOW - 8 * DAY_MS), NOW)).toBe(true);
+  });
+
+  it("exactly at the grace boundary → still offline, still Pro (strict >)", () => {
+    expect(proView(active(NOW - LICENSE_GRACE_MS), NOW)).toBe("offline");
+    expect(isPro(active(NOW - LICENSE_GRACE_MS), NOW)).toBe(true);
   });
 
   it("past the weekly cadence but within 14-day grace → offline, still Pro", () => {

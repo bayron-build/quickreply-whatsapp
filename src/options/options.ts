@@ -34,6 +34,7 @@ const proStatus = $("#pro-status");
 const upgradeLink = $<HTMLAnchorElement>("#upgrade");
 const licenseEntry = $("#license-entry");
 const fLicense = $<HTMLInputElement>("#f-license");
+const activateBtn = $<HTMLButtonElement>("#activate");
 const deactivateBtn = $<HTMLButtonElement>("#deactivate");
 const licenseError = $("#license-error");
 
@@ -243,27 +244,34 @@ async function renderPro(): Promise<void> {
   deactivateBtn.hidden = showBuy;
 }
 
-$("#activate").addEventListener("click", async () => {
+activateBtn.addEventListener("click", async () => {
   const key = fLicense.value.trim();
   if (key === "") return;
-  licenseError.textContent = "";
-  const result = await activateLicense(key);
-  if (!result.ok) {
-    // Invalid/garbled key or network trouble: clear inline error, nothing stored.
-    licenseError.textContent = t(
-      result.error === "invalid-key" ? "licenseErrorInvalid" : "licenseErrorNetwork"
-    );
-    return;
-  }
+  // In-flight guard: a double-click must not fire two activations and
+  // consume two instance seats on the provider.
+  activateBtn.disabled = true;
   try {
-    await saveLicense(result.state);
-  } catch (err) {
-    status.textContent = String(err);
-    return;
+    licenseError.textContent = "";
+    const result = await activateLicense(key);
+    if (!result.ok) {
+      // Invalid/garbled key or network trouble: clear inline error, nothing stored.
+      licenseError.textContent = t(
+        result.error === "invalid-key" ? "licenseErrorInvalid" : "licenseErrorNetwork"
+      );
+      return;
+    }
+    try {
+      await saveLicense(result.state);
+    } catch (err) {
+      status.textContent = String(err);
+      return;
+    }
+    fLicense.value = "";
+    await renderPro();
+    await render(); // Task 13 makes the template counter license-aware
+  } finally {
+    activateBtn.disabled = false;
   }
-  fLicense.value = "";
-  await renderPro();
-  await render(); // Task 13 makes the template counter license-aware
 });
 
 deactivateBtn.addEventListener("click", async () => {
