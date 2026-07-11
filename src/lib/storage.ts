@@ -1,13 +1,13 @@
 import type { Template, Settings } from "./types";
 import { DEFAULT_SETTINGS, SCHEMA_VERSION } from "./types";
 
-async function read<T>(key: string, fallback: T): Promise<T> {
+export async function read<T>(key: string, fallback: T): Promise<T> {
   const result = await chrome.storage.local.get(key);
   const value = result[key] as T | undefined;
   return value === undefined ? fallback : value;
 }
 
-async function write(key: string, value: unknown): Promise<void> {
+export async function write(key: string, value: unknown): Promise<void> {
   await chrome.storage.local.set({ [key]: value, schemaVersion: SCHEMA_VERSION });
 }
 
