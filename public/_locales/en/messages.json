@@ -40,5 +40,17 @@
   "upgradeToPro": { "message": "Upgrade to Pro" },
   "invalidTime": { "message": "Pick a time in the future." },
   "fillFormTitle": { "message": "Fill in the blanks" },
-  "insert": { "message": "Insert" }
+  "insert": { "message": "Insert" },
+  "proTitle": { "message": "QuickReply Pro" },
+  "proPitch": { "message": "Unlimited templates, unlimited reminders, and the fill-in form for placeholders." },
+  "proStatusFree": { "message": "Free plan" },
+  "proStatusActive": { "message": "Pro active — $PLAN$", "placeholders": { "PLAN": { "content": "$1" } } },
+  "proStatusOffline": { "message": "Pro active (offline — will revalidate when the license server is reachable)" },
+  "proStatusInvalid": { "message": "Pro is paused: the license could not be verified. Everything you saved is untouched, and existing reminders still fire." },
+  "upgradeButton": { "message": "Upgrade to Pro — $PRICE$", "placeholders": { "PRICE": { "content": "$1" } } },
+  "licenseLabel": { "message": "License key (from your purchase email)" },
+  "activate": { "message": "Activate" },
+  "deactivate": { "message": "Deactivate on this device" },
+  "licenseErrorInvalid": { "message": "That key was not accepted. Check for typos and try again." },
+  "licenseErrorNetwork": { "message": "Could not reach the license server. Try again in a moment." }
 }

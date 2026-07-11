@@ -40,5 +40,17 @@
   "upgradeToPro": { "message": "Tingkatkan ke Pro" },
   "invalidTime": { "message": "Pilih waktu di masa depan." },
   "fillFormTitle": { "message": "Isi bagian kosong" },
-  "insert": { "message": "Sisipkan" }
+  "insert": { "message": "Sisipkan" },
+  "proTitle": { "message": "QuickReply Pro" },
+  "proPitch": { "message": "Template tanpa batas, pengingat tanpa batas, dan formulir isian untuk placeholder." },
+  "proStatusFree": { "message": "Paket gratis" },
+  "proStatusActive": { "message": "Pro aktif — $PLAN$", "placeholders": { "PLAN": { "content": "$1" } } },
+  "proStatusOffline": { "message": "Pro aktif (offline — validasi ulang saat server lisensi terjangkau)" },
+  "proStatusInvalid": { "message": "Pro dijeda: lisensi tidak dapat diverifikasi. Semua data Anda utuh, dan pengingat yang ada tetap berbunyi." },
+  "upgradeButton": { "message": "Tingkatkan ke Pro — $PRICE$", "placeholders": { "PRICE": { "content": "$1" } } },
+  "licenseLabel": { "message": "Kunci lisensi (dari email pembelian Anda)" },
+  "activate": { "message": "Aktifkan" },
+  "deactivate": { "message": "Nonaktifkan di perangkat ini" },
+  "licenseErrorInvalid": { "message": "Kunci tidak diterima. Periksa kesalahan ketik lalu coba lagi." },
+  "licenseErrorNetwork": { "message": "Tidak bisa terhubung ke server lisensi. Coba lagi sebentar lagi." }
 }

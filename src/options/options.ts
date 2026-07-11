@@ -1,6 +1,8 @@
 import type { Template } from "../lib/types";
 import { getTemplates, saveTemplate, deleteTemplate, deleteTemplates } from "../lib/storage";
 import { exportToJson, parseImport } from "../lib/importExport";
+import { proView, activateLicense, deactivateLicense, getLicense, saveLicense } from "../lib/license";
+import { CHECKOUT_URL, PRICE_DISPLAY } from "../lib/proConfig";
 
 const t = (key: string, subs?: string[]): string =>
   chrome.i18n.getMessage(key, subs) || key;
@@ -25,6 +27,13 @@ const fShortcut = $<HTMLInputElement>("#f-shortcut");
 const fBody = $<HTMLTextAreaElement>("#f-body");
 const status = $("#status");
 const deleteSelectedBtn = $<HTMLButtonElement>("#delete-selected");
+
+const proStatus = $("#pro-status");
+const upgradeLink = $<HTMLAnchorElement>("#upgrade");
+const licenseEntry = $("#license-entry");
+const fLicense = $<HTMLInputElement>("#f-license");
+const deactivateBtn = $<HTMLButtonElement>("#deactivate");
+const licenseError = $("#license-error");
 
 const selected = new Set<string>();
 
@@ -175,8 +184,65 @@ deleteSelectedBtn.addEventListener("click", async () => {
   await render();
 });
 
+async function renderPro(): Promise<void> {
+  const state = await getLicense();
+  const view = proView(state, Date.now());
+  const statusText: Record<typeof view, string> = {
+    free: t("proStatusFree"),
+    active: t("proStatusActive", [state?.plan ?? "Pro"]),
+    offline: t("proStatusOffline"),
+    invalid: t("proStatusInvalid"),
+  };
+  proStatus.textContent = statusText[view];
+  const showBuy = view === "free" || view === "invalid";
+  upgradeLink.hidden = !showBuy || CHECKOUT_URL === "";
+  if (!upgradeLink.hidden) {
+    upgradeLink.href = CHECKOUT_URL;
+    upgradeLink.textContent = t("upgradeButton", [PRICE_DISPLAY]);
+  }
+  licenseEntry.hidden = !showBuy;
+  deactivateBtn.hidden = showBuy;
+}
+
+$("#activate").addEventListener("click", async () => {
+  const key = fLicense.value.trim();
+  if (key === "") return;
+  licenseError.textContent = "";
+  const result = await activateLicense(key);
+  if (!result.ok) {
+    // Invalid/garbled key or network trouble: clear inline error, nothing stored.
+    licenseError.textContent = t(
+      result.error === "invalid-key" ? "licenseErrorInvalid" : "licenseErrorNetwork"
+    );
+    return;
+  }
+  try {
+    await saveLicense(result.state);
+  } catch (err) {
+    status.textContent = String(err);
+    return;
+  }
+  fLicense.value = "";
+  await renderPro();
+  await render(); // Task 13 makes the template counter license-aware
+});
+
+deactivateBtn.addEventListener("click", async () => {
+  const state = await getLicense();
+  if (state) void deactivateLicense(state); // best-effort, fire and forget
+  try {
+    await saveLicense(null);
+  } catch (err) {
+    status.textContent = String(err);
+    return;
+  }
+  await renderPro();
+  await render();
+});
+
 chrome.notifications.getPermissionLevel((level) => {
   if (level === "denied") $("#notif-warning").hidden = false;
 });
 
 void render();
+void renderPro();

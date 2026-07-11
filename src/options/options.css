@@ -22,6 +22,11 @@ input, textarea { width: 100%; padding: 0.5rem; border: 1px solid #d1d7db; borde
 #editor { background: #f7f8fa; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 1rem; }
 li input[type="checkbox"] { margin: 0; }
 #delete-selected { margin-bottom: 0.6rem; }
+h2 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+.error { color: #c5221f; font-size: 0.85rem; }
+.button-link { display: inline-block; background: #008069; color: #fff; border-radius: 8px;
+  padding: 0.45rem 0.9rem; text-decoration: none; font-size: 0.9rem; margin-bottom: 0.6rem; }
+#pro-status { font-weight: 600; }
 
 @media (prefers-color-scheme: dark) {
   body { background: #111b21; color: #e9edef; }
@@ -39,4 +44,5 @@ li input[type="checkbox"] { margin: 0; }
   input, textarea { background: #2a3942; border-color: #3b4a54; color: #e9edef; }
   hr { border-color: #2a3942; }
   #editor { background: #182229; }
+  .error { color: #f28b82; }
 }
