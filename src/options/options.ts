@@ -1,6 +1,7 @@
 import type { Template } from "../lib/types";
-import { FREE_TEMPLATE_CAP } from "../lib/types";
+import { FREE_TEMPLATE_CAP, FREE_REMINDER_CAP } from "../lib/types";
 import { getTemplates, saveTemplate, deleteTemplate, deleteTemplates } from "../lib/storage";
+import { getReminders, deleteReminder, formatDueAt, countPending } from "../lib/reminders";
 import { exportToJson, parseImport, capImport } from "../lib/importExport";
 import { proView, activateLicense, deactivateLicense, getLicense, saveLicense } from "../lib/license";
 import { isProActive } from "../lib/entitlements";
@@ -29,6 +30,10 @@ const fShortcut = $<HTMLInputElement>("#f-shortcut");
 const fBody = $<HTMLTextAreaElement>("#f-body");
 const status = $("#status");
 const deleteSelectedBtn = $<HTMLButtonElement>("#delete-selected");
+
+const reminderList = $<HTMLUListElement>("#reminder-list");
+const reminderEmpty = $("#reminder-empty");
+const reminderCount = $("#reminder-count");
 
 const proStatus = $("#pro-status");
 const upgradeLink = $<HTMLAnchorElement>("#upgrade");
@@ -109,6 +114,57 @@ async function render(): Promise<void> {
     })
   );
   updateDeleteSelected();
+}
+
+async function renderReminders(): Promise<void> {
+  // Show everything not dismissed (pending + already-fired), soonest first.
+  const all = (await getReminders())
+    .filter((r) => r.status !== "dismissed")
+    .sort((a, b) => a.dueAt - b.dueAt);
+  const pending = countPending(all);
+  const pro = await isProActive();
+  reminderCount.textContent = pro
+    ? t("reminderCount", [String(pending)])
+    : t("reminderCountCapped", [String(pending), String(FREE_REMINDER_CAP)]);
+  reminderEmpty.hidden = all.length > 0;
+  const labels = { today: t("reminderWhenToday"), tomorrow: t("reminderWhenTomorrow") };
+  reminderList.replaceChildren(
+    ...all.map((r) => {
+      const li = document.createElement("li");
+      const chat = document.createElement("span");
+      chat.className = "r-chat";
+      chat.textContent = r.chatName;
+      const when = document.createElement("span");
+      when.className = "r-when";
+      when.textContent = formatDueAt(r.dueAt, Date.now(), navigator.language, labels);
+      if (r.status === "fired") {
+        const badge = document.createElement("span");
+        badge.className = "r-due";
+        badge.textContent = t("reminderDueBadge");
+        when.append(" ", badge);
+      }
+      const note = document.createElement("span");
+      note.className = "r-note";
+      note.textContent = r.note;
+      const del = document.createElement("button");
+      del.className = "small danger";
+      del.textContent = "✕";
+      del.title = t("reminderCancelTitle");
+      del.addEventListener("click", async () => {
+        try {
+          // Deleting also updates the toolbar badge/alarms: the background
+          // worker reacts to the storage change.
+          await deleteReminder(r.id);
+        } catch (err) {
+          status.textContent = String(err);
+          return;
+        }
+        await renderReminders();
+      });
+      li.append(chat, when, note, del);
+      return li;
+    })
+  );
 }
 
 function openEditor(tpl: Template | null): void {
@@ -292,4 +348,11 @@ chrome.notifications.getPermissionLevel((level) => {
 });
 
 void render();
+void renderReminders();
 void renderPro();
+
+// Reflect reminders fired/changed by the background worker while the options
+// page is open (badge cleared, new fires) without needing a manual refresh.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.reminders) void renderReminders();
+});

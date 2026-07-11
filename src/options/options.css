@@ -27,6 +27,14 @@ h2 { font-size: 1.1rem; margin-bottom: 0.2rem; }
 .button-link { display: inline-block; background: #008069; color: #fff; border-radius: 8px;
   padding: 0.45rem 0.9rem; text-decoration: none; font-size: 0.9rem; margin-bottom: 0.6rem; }
 #pro-status { font-weight: 600; }
+/* Links inside the counters and Pro section must not fall back to the
+   default browser blue, which is near-invisible on the dark card. */
+#count a, #pro a, #reminder-count a { color: #008069; }
+#reminder-list li .r-chat { font-weight: 600; }
+#reminder-list li .r-when { color: #667781; font-size: 0.85rem; white-space: nowrap; }
+#reminder-list li .r-note { flex: 1; color: #667781; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; }
+#reminder-list li .r-due { color: #b26a00; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.03em; }
+#reminder-list li button.small { margin-left: auto; }
 
 @media (prefers-color-scheme: dark) {
   body { background: #111b21; color: #e9edef; }
@@ -45,4 +53,7 @@ h2 { font-size: 1.1rem; margin-bottom: 0.2rem; }
   hr { border-color: #2a3942; }
   #editor { background: #182229; }
   .error { color: #f28b82; }
+  #count a, #pro a, #reminder-count a { color: #06cf9c; }
+  #reminder-list li .r-when, #reminder-list li .r-note { color: #8696a0; }
+  #reminder-list li .r-due { color: #e0a458; }
 }

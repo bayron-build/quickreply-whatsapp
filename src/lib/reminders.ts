@@ -13,6 +13,31 @@ export function presetDueAt(preset: ReminderPreset, now: Date): number {
   return d.getTime();
 }
 
+/**
+ * Human label for a reminder's due time, e.g. "today 15:30", "tomorrow 09:00",
+ * or "20 Jul 09:00". The today/tomorrow words are passed in so this stays pure
+ * and locale-agnostic (the options page supplies the translated labels).
+ */
+export function formatDueAt(
+  dueAt: number,
+  now: number,
+  locale: string,
+  labels: { today: string; tomorrow: string }
+): string {
+  const due = new Date(dueAt);
+  const time = due.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  const today = new Date(now);
+  const tomorrow = new Date(now);
+  tomorrow.setDate(today.getDate() + 1);
+  const sameDay = (a: Date, b: Date): boolean =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+  if (sameDay(due, today)) return `${labels.today} ${time}`;
+  if (sameDay(due, tomorrow)) return `${labels.tomorrow} ${time}`;
+  return `${due.toLocaleDateString(locale, { day: "numeric", month: "short" })} ${time}`;
+}
+
 export function countPending(reminders: Reminder[]): number {
   return reminders.filter((r) => r.status === "pending").length;
 }

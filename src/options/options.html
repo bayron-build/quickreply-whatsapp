@@ -8,8 +8,18 @@
   <body>
     <main>
       <h1 data-i18n="optionsTitle"></h1>
+
+      <section id="reminders">
+        <h2 data-i18n="remindersHeading"></h2>
+        <p id="reminder-count" class="muted"></p>
+        <p id="notif-warning" class="muted" hidden data-i18n="notifDisabledWarning"></p>
+        <ul id="reminder-list"></ul>
+        <p id="reminder-empty" class="muted" data-i18n="reminderEmpty" hidden></p>
+      </section>
+
+      <hr />
+      <h2 data-i18n="templatesHeading"></h2>
       <p id="count" class="muted"></p>
-      <p id="notif-warning" class="muted" hidden data-i18n="notifDisabledWarning"></p>
 
       <ul id="list"></ul>
       <p id="empty" class="muted" data-i18n="noTemplatesYet" hidden></p>

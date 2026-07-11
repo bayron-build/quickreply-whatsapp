@@ -26,6 +26,7 @@ import {
   saveReminder,
   setReminderStatus,
   deleteReminder,
+  formatDueAt,
 } from "../src/lib/reminders";
 
 function mk(id: string, status: Reminder["status"] = "pending", dueAt = 5000): Reminder {
@@ -33,6 +34,31 @@ function mk(id: string, status: Reminder["status"] = "pending", dueAt = 5000): R
 }
 
 beforeEach(() => backing.clear());
+
+describe("formatDueAt", () => {
+  const labels = { today: "today", tomorrow: "tomorrow" };
+  const now = new Date(2026, 6, 12, 10, 0).getTime(); // 12 Jul 2026, 10:00 local
+
+  it("labels a same-day reminder with 'today' and the time", () => {
+    const due = new Date(2026, 6, 12, 15, 30).getTime();
+    const s = formatDueAt(due, now, "en-US", labels);
+    expect(s.startsWith("today")).toBe(true);
+    expect(s).toContain("30"); // minute survives whatever hour format
+  });
+
+  it("labels a next-day reminder with 'tomorrow'", () => {
+    const due = new Date(2026, 6, 13, 9, 0).getTime();
+    expect(formatDueAt(due, now, "en-US", labels).startsWith("tomorrow")).toBe(true);
+  });
+
+  it("uses a short date for reminders beyond tomorrow", () => {
+    const due = new Date(2026, 6, 20, 9, 0).getTime();
+    const s = formatDueAt(due, now, "en-US", labels);
+    expect(s.startsWith("today")).toBe(false);
+    expect(s.startsWith("tomorrow")).toBe(false);
+    expect(s).toContain("Jul");
+  });
+});
 
 describe("presetDueAt", () => {
   const now = new Date("2026-07-11T14:30:00");
