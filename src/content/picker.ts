@@ -1,10 +1,14 @@
 import type { Template } from "../lib/types";
+import type { Reminder } from "../lib/types";
 import { rankTemplates } from "../lib/search";
 import { getTemplates } from "../lib/storage";
+import { canAddReminder, getReminders, presetDueAt, saveReminder } from "../lib/reminders";
+import type { ReminderPreset } from "../lib/reminders";
+import { isProActive } from "../lib/entitlements";
 
-const t = (key: string): string => {
+const t = (key: string, substitutions?: string[]): string => {
   try {
-    return chrome.i18n.getMessage(key) || key;
+    return chrome.i18n.getMessage(key, substitutions) || key;
   } catch {
     return key; // extension context invalidated; keys are readable English
   }
@@ -33,6 +37,20 @@ const CSS = `
   .qr-item .qr-body { color: #8696a0; }
   .qr-empty { color: #8696a0; }
 }
+.qr-remind { padding: 8px 12px; cursor: pointer; color: #008069; font-weight: 600;
+  border-bottom: 1px solid #e9edef; }
+.qr-remind.qr-active { background: #f0f2f5; }
+.qr-step { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.qr-step h3 { margin: 0; font-size: 14px; }
+.qr-preset { text-align: left; border: 1px solid #d1d7db; background: #fff; border-radius: 8px;
+  padding: 8px 10px; cursor: pointer; font: inherit; color: inherit; }
+.qr-preset:hover { background: #f0f2f5; }
+.qr-note, .qr-custom { border: 1px solid #d1d7db; border-radius: 8px; padding: 8px 10px; font: inherit; }
+.qr-error { color: #c5221f; font-size: 13px; margin: 0; }
+.qr-row { display: flex; gap: 8px; }
+.qr-btn { border: 1px solid #d1d7db; background: #fff; border-radius: 8px; padding: 8px 12px;
+  cursor: pointer; font: inherit; color: inherit; }
+.qr-btn.qr-primary { background: #008069; border-color: #008069; color: #fff; }
 `;
 
 export class Picker {
@@ -43,10 +61,13 @@ export class Picker {
   private templates: Template[] = [];
   private matches: Template[] = [];
   private active = 0;
+  private view: "list" | "reminder" = "list";
+  private reminderError = "";
 
   constructor(
     private onSelect: (tpl: Template) => void,
-    private onDismiss?: () => void
+    private onDismiss?: () => void,
+    private getChatName: () => string | null = () => null
   ) {}
 
   get isOpen(): boolean {
@@ -83,6 +104,7 @@ export class Picker {
       this.panel.style.left = `${Math.max(8, anchor.left)}px`;
       this.panel.style.top = `${Math.max(8, anchor.top - height - 8)}px`;
 
+      this.view = "list";
       this.refresh();
       this.input.focus();
       document.addEventListener("mousedown", this.onDocMouseDown, true);
@@ -105,6 +127,17 @@ export class Picker {
 
   private renderList(): void {
     this.listEl.replaceChildren();
+    const chatOpen = this.getChatName() !== null;
+    if (chatOpen) {
+      const row = document.createElement("div");
+      row.className = "qr-remind" + (this.active === -1 ? " qr-active" : "");
+      row.textContent = t("remindMeRow");
+      row.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        void this.openReminderStep();
+      });
+      this.listEl.appendChild(row);
+    }
     if (this.templates.length === 0 || this.matches.length === 0) {
       const empty = document.createElement("div");
       empty.className = "qr-empty";
@@ -163,12 +196,16 @@ export class Picker {
       this.renderList();
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      this.active = Math.max(this.active - 1, 0);
+      this.active = Math.max(this.active - 1, this.getChatName() !== null ? -1 : 0);
       this.renderList();
     } else if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
-      this.pick(this.active);
+      if (this.active === -1) {
+        void this.openReminderStep();
+      } else {
+        this.pick(this.active);
+      }
     }
   }
 
@@ -177,5 +214,156 @@ export class Picker {
     if (!tpl) return;
     this.close();
     this.onSelect(tpl);
+  }
+
+  /** Esc semantics: second-step views return to the list; list view closes. */
+  escape(): "closed" | "handled" {
+    if (this.view !== "list") {
+      this.backToList();
+      return "handled";
+    }
+    this.close();
+    return "closed";
+  }
+
+  private async openReminderStep(): Promise<void> {
+    const reminders = await getReminders();
+    const pro = await isProActive();
+    this.view = "reminder";
+    this.reminderError = "";
+    if (!canAddReminder(reminders, pro)) {
+      this.renderCapNotice();
+      return;
+    }
+    this.renderReminderStep();
+  }
+
+  private renderCapNotice(): void {
+    this.input.hidden = true;
+    this.listEl.replaceChildren();
+    const step = document.createElement("div");
+    step.className = "qr-step";
+    const msg = document.createElement("p");
+    msg.textContent = t("reminderCapReached");
+    msg.style.margin = "0";
+    const upgrade = document.createElement("button");
+    upgrade.className = "qr-btn qr-primary";
+    upgrade.textContent = t("upgradeToPro");
+    upgrade.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      try {
+        void chrome.runtime.sendMessage({ type: "qr-open-options" });
+      } catch {
+        // extension context gone; nothing to do
+      }
+      this.dismiss();
+    });
+    const back = document.createElement("button");
+    back.className = "qr-btn";
+    back.textContent = t("back");
+    back.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      this.backToList();
+    });
+    const row = document.createElement("div");
+    row.className = "qr-row";
+    row.append(upgrade, back);
+    step.append(msg, row);
+    this.listEl.appendChild(step);
+  }
+
+  private renderReminderStep(): void {
+    this.input.hidden = true;
+    this.listEl.replaceChildren();
+    const chatName = this.getChatName() ?? "";
+    const step = document.createElement("div");
+    step.className = "qr-step";
+
+    const heading = document.createElement("h3");
+    heading.textContent = t("reminderFor", [chatName]);
+
+    const note = document.createElement("input");
+    note.className = "qr-note";
+    note.placeholder = t("reminderNotePlaceholder");
+    note.maxLength = 120;
+
+    const presets: Array<[ReminderPreset, string]> = [
+      ["1h", t("preset1h")],
+      ["3h", t("preset3h")],
+      ["tomorrow9", t("presetTomorrow")],
+    ];
+    const presetBtns = presets.map(([preset, label]) => {
+      const b = document.createElement("button");
+      b.className = "qr-preset";
+      b.textContent = label;
+      b.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        void this.createReminder(chatName, presetDueAt(preset, new Date()), note.value.trim());
+      });
+      return b;
+    });
+
+    const custom = document.createElement("input");
+    custom.type = "datetime-local";
+    custom.className = "qr-custom";
+
+    const error = document.createElement("p");
+    error.className = "qr-error";
+    error.textContent = this.reminderError;
+
+    const set = document.createElement("button");
+    set.className = "qr-btn qr-primary";
+    set.textContent = t("setReminder");
+    set.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      const when = custom.value ? new Date(custom.value).getTime() : NaN;
+      if (!Number.isFinite(when) || when <= Date.now()) {
+        this.reminderError = t("invalidTime");
+        this.renderReminderStep();
+        return;
+      }
+      void this.createReminder(chatName, when, note.value.trim());
+    });
+
+    const back = document.createElement("button");
+    back.className = "qr-btn";
+    back.textContent = t("back");
+    back.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      this.backToList();
+    });
+
+    const row = document.createElement("div");
+    row.className = "qr-row";
+    row.append(set, back);
+    step.append(heading, note, ...presetBtns, custom, error, row);
+    this.listEl.appendChild(step);
+    note.focus();
+  }
+
+  private backToList(): void {
+    this.view = "list";
+    this.reminderError = "";
+    this.input.hidden = false;
+    this.refresh();
+    this.input.focus();
+  }
+
+  private async createReminder(chatName: string, dueAt: number, note: string): Promise<void> {
+    const r: Reminder = {
+      id: crypto.randomUUID(),
+      chatName,
+      note,
+      dueAt,
+      createdAt: Date.now(),
+      status: "pending",
+    };
+    try {
+      await saveReminder(r);
+    } catch {
+      // storage failed; leave the step open so the user can retry
+      return;
+    }
+    this.dismiss();
   }
 }

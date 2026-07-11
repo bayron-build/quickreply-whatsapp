@@ -22,5 +22,18 @@
   "noResults": { "message": "No matching templates" },
   "noTemplatesYet": { "message": "No templates yet — add your first one in the extension options." },
   "openChatFirst": { "message": "Open a chat first — or WhatsApp Web may have changed and an update is coming." },
-  "reminderNotifTitle": { "message": "Follow up: $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } }
+  "reminderNotifTitle": { "message": "Follow up: $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } },
+  "remindMeRow": { "message": "⏰ Remind me about this chat" },
+  "reminderFor": { "message": "Remind me about $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } },
+  "preset1h": { "message": "In 1 hour" },
+  "preset3h": { "message": "In 3 hours" },
+  "presetTomorrow": { "message": "Tomorrow 09:00" },
+  "presetCustom": { "message": "Pick date & time" },
+  "reminderNotePlaceholder": { "message": "Note (optional)" },
+  "setReminder": { "message": "Set reminder" },
+  "reminderSaved": { "message": "Reminder set" },
+  "back": { "message": "Back" },
+  "reminderCapReached": { "message": "Free includes 2 active reminders. Pro makes them unlimited." },
+  "upgradeToPro": { "message": "Upgrade to Pro" },
+  "invalidTime": { "message": "Pick a time in the future." }
 }

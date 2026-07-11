@@ -42,7 +42,8 @@ const picker = new Picker(
   (tpl: Template) => {
     void insertTemplate(tpl);
   },
-  () => getComposeBox()?.focus() // dismissing the picker returns you to typing
+  () => getComposeBox()?.focus(), // dismissing the picker returns you to typing
+  () => getChatName()
 );
 
 // Caret position in the compose box, snapshotted when the picker opens —
@@ -100,8 +101,7 @@ document.addEventListener(
     if (e.key === "Escape" && picker.isOpen) {
       e.preventDefault();
       e.stopPropagation();
-      picker.close();
-      getComposeBox()?.focus();
+      if (picker.escape() === "closed") getComposeBox()?.focus();
       return;
     }
     // Ctrl+/ toggles the picker anywhere on the page.

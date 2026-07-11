@@ -22,5 +22,18 @@
   "noResults": { "message": "Tidak ada template yang cocok" },
   "noTemplatesYet": { "message": "Belum ada template — tambahkan lewat opsi ekstensi." },
   "openChatFirst": { "message": "Buka chat dulu — atau WhatsApp Web berubah dan pembaruan sedang disiapkan." },
-  "reminderNotifTitle": { "message": "Tindak lanjut: $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } }
+  "reminderNotifTitle": { "message": "Tindak lanjut: $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } },
+  "remindMeRow": { "message": "⏰ Ingatkan saya tentang chat ini" },
+  "reminderFor": { "message": "Ingatkan saya tentang $CHAT$", "placeholders": { "CHAT": { "content": "$1" } } },
+  "preset1h": { "message": "1 jam lagi" },
+  "preset3h": { "message": "3 jam lagi" },
+  "presetTomorrow": { "message": "Besok 09.00" },
+  "presetCustom": { "message": "Pilih tanggal & waktu" },
+  "reminderNotePlaceholder": { "message": "Catatan (opsional)" },
+  "setReminder": { "message": "Pasang pengingat" },
+  "reminderSaved": { "message": "Pengingat terpasang" },
+  "back": { "message": "Kembali" },
+  "reminderCapReached": { "message": "Versi gratis mencakup 2 pengingat aktif. Pro membuatnya tanpa batas." },
+  "upgradeToPro": { "message": "Tingkatkan ke Pro" },
+  "invalidTime": { "message": "Pilih waktu di masa depan." }
 }
