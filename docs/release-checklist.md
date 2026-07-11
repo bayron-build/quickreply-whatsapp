@@ -27,3 +27,51 @@ Load the fresh `dist/` unpacked in BOTH Chrome and Edge, then in each:
 - [ ] Orphaned-script case: reload the extension WITHOUT refreshing the WhatsApp tab, press Ctrl+/ → bilingual "refresh this page" toast, no console errors
 - [ ] DevTools console: no errors from content.js during all of the above
 - [ ] manifest.json in zip top level; version bumped from last release; entry paths use forward slashes
+
+## v1.1 — Reminders e2e
+
+- [ ] Set a reminder via each preset AND via a custom time
+- [ ] Reminder fires while you are browsing WhatsApp Web
+- [ ] Reminder missed while the browser was closed fires on next startup
+- [ ] Badge counts pending reminders and clears once they are handled
+- [ ] Notification click focuses the tab AND opens the right chat
+- [ ] Notification click with WhatsApp closed opens a tab and navigates to the chat
+- [ ] Chat missing from the sidebar → focus-only fallback, no errors
+
+## v1.1 — Purchase flow (Lemon Squeezy test mode)
+
+- [ ] Checkout opens from the options page
+- [ ] Test purchase delivers a license key
+- [ ] Activation flips the extension to Pro
+- [ ] Deactivate returns the extension to free
+- [ ] Refund the test purchase in the LS dashboard → after revalidation Pro soft-locks with all data intact and existing reminders still firing
+
+## v1.1 — Free cap (15 templates)
+
+- [ ] Counter shows the current count and the /15 state
+- [ ] Adding a template is blocked at 15 (free tier)
+- [ ] Importing past the cap reports a partial import (existing untouched)
+- [ ] Grandfathered user with >15 templates keeps everything working; nothing existing is locked
+
+## v1.1 — Fill-in form (Pro)
+
+- [ ] A template with mixed placeholders opens the fill-in form
+- [ ] Auto-filled values are greyed and remain overridable
+- [ ] Tab / Enter / Esc behave correctly in the form
+- [ ] Free tier is unchanged (no fill-in form)
+
+## v1.1 — Free polish
+
+- [ ] Multi-select delete removes the chosen templates
+- [ ] Theme matching holds across the 4 OS × WhatsApp light/dark combos
+- [ ] New icon renders in the toolbar, the extensions page, and notifications
+
+## v1.1 — Migration from v1 data
+
+- [ ] Load the v1.0.0 zip's data (or a profile that used v1) and update in place
+- [ ] Templates intact, schemaVersion is 2, nothing lost
+
+## v1.1 — Both browsers
+
+- [ ] Full pass on Chrome
+- [ ] Happy path on Edge
