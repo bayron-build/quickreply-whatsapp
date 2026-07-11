@@ -221,16 +221,23 @@ export class Picker {
   private pick(index: number): void {
     const tpl = this.matches[index];
     if (!tpl) return;
-    void this.getFillFields(tpl).then((fields) => {
-      if (!fields) {
-        this.close();
+    void this.getFillFields(tpl)
+      .then((fields) => {
+        if (!this.isOpen) return;
+        if (!fields) {
+          this.close();
+          this.onSelect(tpl);
+          return;
+        }
+        this.fillTpl = tpl;
+        this.view = "fill";
+        this.renderFillForm(fields);
+      })
+      .catch(() => {
+        // Fall back to direct insertion (v1 behavior) so the user's action isn't lost.
+        if (this.isOpen) this.close();
         this.onSelect(tpl);
-        return;
-      }
-      this.fillTpl = tpl;
-      this.view = "fill";
-      this.renderFillForm(fields);
-    });
+      });
   }
 
   private renderFillForm(fields: FillField[]): void {
@@ -314,8 +321,16 @@ export class Picker {
   }
 
   private async openReminderStep(): Promise<void> {
-    const reminders = await getReminders();
-    const pro = await isProActive();
+    let reminders: Reminder[];
+    let pro: boolean;
+    try {
+      reminders = await getReminders();
+      pro = await isProActive();
+    } catch {
+      // Loading failed; stay on the list view (degraded but usable).
+      return;
+    }
+    if (!this.isOpen) return;
     this.view = "reminder";
     this.reminderError = "";
     if (!canAddReminder(reminders, pro)) {
