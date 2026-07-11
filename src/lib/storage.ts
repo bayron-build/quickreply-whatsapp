@@ -31,6 +31,11 @@ export async function deleteTemplate(id: string): Promise<void> {
   await setTemplates((await getTemplates()).filter((t) => t.id !== id));
 }
 
+export async function deleteTemplates(ids: string[]): Promise<void> {
+  const doomed = new Set(ids);
+  await setTemplates((await getTemplates()).filter((t) => !doomed.has(t.id)));
+}
+
 export async function incrementUsage(id: string): Promise<void> {
   const all = await getTemplates();
   const t = all.find((x) => x.id === id);

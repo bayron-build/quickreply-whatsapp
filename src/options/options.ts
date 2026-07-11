@@ -1,5 +1,5 @@
 import type { Template } from "../lib/types";
-import { getTemplates, saveTemplate, deleteTemplate } from "../lib/storage";
+import { getTemplates, saveTemplate, deleteTemplate, deleteTemplates } from "../lib/storage";
 import { exportToJson, parseImport } from "../lib/importExport";
 
 const t = (key: string, subs?: string[]): string =>
@@ -24,17 +24,34 @@ const fTitle = $<HTMLInputElement>("#f-title");
 const fShortcut = $<HTMLInputElement>("#f-shortcut");
 const fBody = $<HTMLTextAreaElement>("#f-body");
 const status = $("#status");
+const deleteSelectedBtn = $<HTMLButtonElement>("#delete-selected");
+
+const selected = new Set<string>();
 
 let editingId: string | null = null;
 
+function updateDeleteSelected(): void {
+  deleteSelectedBtn.hidden = selected.size === 0;
+  deleteSelectedBtn.textContent = t("deleteSelected", [String(selected.size)]);
+}
+
 async function render(): Promise<void> {
   const templates = await getTemplates();
+  for (const id of [...selected]) if (!templates.some((t) => t.id === id)) selected.delete(id);
   // Plain count in v1 — the /cap display returns in v1.1 when the cap is enforced.
   count.textContent = t("templateCount", [String(templates.length)]);
   empty.hidden = templates.length > 0;
   list.replaceChildren(
     ...templates.map((tpl) => {
       const li = document.createElement("li");
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = selected.has(tpl.id);
+      check.addEventListener("change", () => {
+        if (check.checked) selected.add(tpl.id);
+        else selected.delete(tpl.id);
+        updateDeleteSelected();
+      });
       const title = document.createElement("span");
       title.className = "t-title";
       title.textContent = tpl.title;
@@ -63,9 +80,11 @@ async function render(): Promise<void> {
         await render();
       });
       li.append(title, shortcut, body, edit, del);
+      li.prepend(check);
       return li;
     })
   );
+  updateDeleteSelected();
 }
 
 function openEditor(tpl: Template | null): void {
@@ -141,6 +160,23 @@ importFile.addEventListener("change", async () => {
   }
   status.textContent = t("importSuccess");
   await render();
+});
+
+deleteSelectedBtn.addEventListener("click", async () => {
+  if (!window.confirm(t("deleteSelectedConfirm", [String(selected.size)]))) return;
+  try {
+    await deleteTemplates([...selected]);
+  } catch (err) {
+    // Spec: storage write failures must be visible in the options page.
+    status.textContent = String(err);
+    return;
+  }
+  selected.clear();
+  await render();
+});
+
+chrome.notifications.getPermissionLevel((level) => {
+  if (level === "denied") $("#notif-warning").hidden = false;
 });
 
 void render();

@@ -20,6 +20,8 @@ label span { display: block; font-size: 0.85rem; margin-bottom: 0.2rem; }
 input, textarea { width: 100%; padding: 0.5rem; border: 1px solid #d1d7db; border-radius: 8px; font: inherit; }
 .row { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
 #editor { background: #f7f8fa; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 1rem; }
+li input[type="checkbox"] { margin: 0; }
+#delete-selected { margin-bottom: 0.6rem; }
 
 @media (prefers-color-scheme: dark) {
   body { background: #111b21; color: #e9edef; }

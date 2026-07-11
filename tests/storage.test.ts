@@ -21,6 +21,7 @@ import {
   getTemplates,
   saveTemplate,
   deleteTemplate,
+  deleteTemplates,
   incrementUsage,
   getSettings,
   saveSettings,
@@ -49,6 +50,14 @@ describe("storage", () => {
     await saveTemplate(mk("a"));
     await saveTemplate(mk("b"));
     await deleteTemplate("a");
+    expect((await getTemplates()).map((t) => t.id)).toEqual(["b"]);
+  });
+
+  it("deleteTemplates removes all matching ids in one write", async () => {
+    await saveTemplate(mk("a"));
+    await saveTemplate(mk("b"));
+    await saveTemplate(mk("c"));
+    await deleteTemplates(["a", "c"]);
     expect((await getTemplates()).map((t) => t.id)).toEqual(["b"]);
   });
 
